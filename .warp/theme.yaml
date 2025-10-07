@@ -1,0 +1,209 @@
+# QuestCraft Warp Theme
+# Custom theme matching the QuestCraft dark aesthetic with blue/purple gradients
+
+theme:
+  name: "QuestCraft Dark"
+  description: "Dark theme matching QuestCraft's UI with blue and purple accents"
+  version: "1.0"
+  
+# Color scheme matching QuestCraft's CSS (#0f1419 background, blue/purple gradients)
+colors:
+  # Background colors (matching QuestCraft's #0f1419)
+  background: "#0f1419"
+  background_secondary: "#1a1f24"
+  background_tertiary: "#252a30"
+  
+  # Foreground colors
+  foreground: "#ffffff"
+  foreground_secondary: "#e6e6e6"
+  foreground_muted: "#a0a0a0"
+  
+  # Accent colors (matching QuestCraft's blue/purple gradients)
+  accent_primary: "#60a5fa"    # Blue from QuestCraft gradients
+  accent_secondary: "#a78bfa"  # Purple from QuestCraft gradients
+  accent_tertiary: "#34d399"   # Green for success states
+  
+  # Status colors
+  success: "#34d399"
+  warning: "#fbbf24"
+  error: "#f87171"
+  info: "#60a5fa"
+  
+  # UI element colors
+  border: "rgba(96, 165, 250, 0.2)"
+  selection: "rgba(96, 165, 250, 0.3)"
+  highlight: "rgba(167, 139, 250, 0.2)"
+  
+  # Terminal colors
+  cursor: "#60a5fa"
+  cursor_accent: "#a78bfa"
+
+# Typography
+typography:
+  font_family: "JetBrains Mono, Monaco, 'Cascadia Code', 'SF Mono', Consolas, monospace"
+  font_size: "14px"
+  line_height: "1.4"
+  
+# UI customizations
+ui:
+  # Terminal window
+  window:
+    opacity: 0.95
+    blur: true
+    border_radius: "8px"
+    
+  # Tabs
+  tabs:
+    background: "#1a1f24" 
+    active_background: "#252a30"
+    border: "rgba(96, 165, 250, 0.2)"
+    
+  # Status bar
+  status_bar:
+    background: "#1a1f24"
+    text_color: "#e6e6e6"
+    
+  # Sidebar
+  sidebar:
+    background: "#0f1419"
+    text_color: "#e6e6e6"
+    
+# Custom prompt styling
+prompt:
+  # Git status colors
+  git_clean: "#34d399"
+  git_dirty: "#fbbf24"
+  git_staged: "#60a5fa"
+  
+  # Path colors
+  path_current: "#a78bfa"
+  path_parent: "#60a5fa"
+  
+  # Node.js/npm indicators
+  node_version: "#34d399"
+  npm_package: "#60a5fa"
+
+# Syntax highlighting for code
+syntax_highlighting:
+  comment: "#6b7280"
+  string: "#34d399"
+  number: "#fbbf24"
+  keyword: "#a78bfa"
+  function: "#60a5fa"
+  variable: "#ffffff"
+  operator: "#e6e6e6"
+  type: "#f87171"
+
+# QuestCraft-specific visual elements
+questcraft_elements:
+  # Icons and emojis used in commands
+  icons:
+    server: "🚀"
+    database: "🗄️"
+    admin: "👤"
+    quest: "🏆"
+    shop: "🛒"
+    development: "⚡"
+    testing: "🧪"
+    
+  # Status indicators
+  status:
+    connected: "✅"
+    disconnected: "❌"
+    in_progress: "🔄"
+    warning: "⚠️"
+    success: "🎉"
+
+# Terminal enhancements
+terminal:
+  # Cursor style
+  cursor_style: "block"
+  cursor_blink: true
+  
+  # Scrollback
+  scrollback_lines: 10000
+  
+  # Bell
+  audible_bell: false
+  visual_bell: true
+
+# Development environment customizations
+development:
+  # Highlighting for npm commands
+  npm_commands:
+    color: "#34d399"
+    background: "rgba(52, 211, 153, 0.1)"
+    
+  # Highlighting for database operations
+  db_commands:
+    color: "#60a5fa"
+    background: "rgba(96, 165, 250, 0.1)"
+    
+  # Error highlighting
+  errors:
+    color: "#f87171"
+    background: "rgba(248, 113, 113, 0.1)"
+
+# Custom animations and effects
+effects:
+  # Smooth transitions
+  transition_duration: "0.2s"
+  
+  # Typing effects for commands
+  command_typing:
+    enabled: true
+    color: "#a78bfa"
+    
+  # Success animations
+  success_pulse:
+    enabled: true
+    color: "#34d399"
+
+# Warp-specific configurations
+warp_config:
+  # Honor existing .warp directory structure
+  respect_existing_config: true
+  
+  # Terminal behavior
+  close_tab_on_exit: false
+  new_tab_behavior: "current_directory"
+  
+  # AI features
+  ai_suggestions:
+    enabled: true
+    theme_color: "#60a5fa"
+    
+# Quick access styling for QuestCraft commands
+command_styling:
+  # High priority commands (bright colors)
+  priority_high:
+    commands: ["dev", "start", "db", "db-init"]
+    color: "#60a5fa"
+    weight: "bold"
+    
+  # Medium priority commands  
+  priority_medium:
+    commands: ["admin", "status", "check"]
+    color: "#a78bfa"
+    
+  # Low priority commands
+  priority_low:
+    commands: ["logs", "audit", "outdated"]
+    color: "#6b7280"
+
+# Theme variants for different times of day
+variants:
+  morning:
+    name: "QuestCraft Morning"
+    accent_color: "#60a5fa"
+    background_brightness: 1.05
+    
+  evening:  
+    name: "QuestCraft Evening"
+    accent_color: "#a78bfa"
+    background_brightness: 0.95
+    
+  night:
+    name: "QuestCraft Night"
+    accent_color: "#6366f1"
+    background_brightness: 0.9

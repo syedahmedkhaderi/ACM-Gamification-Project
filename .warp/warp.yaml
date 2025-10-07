@@ -1,0 +1,139 @@
+name: "QuestCraft - Gamified Learning Platform"
+description: "Node.js/Express/MongoDB gamified learning platform with quest system, badges, and leaderboards"
+version: "2.0"
+
+# Project metadata
+project:
+  type: "node"
+  framework: "express"
+  database: "mongodb"
+  stack: ["nodejs", "express", "mongodb", "vanilla-js"]
+
+# Default environment variables
+env:
+  NODE_ENV: "development"
+  PORT: "5000"
+  SESSION_SECRET: "questcraft-secret-key-change-in-production"
+  
+# Quick actions for common tasks
+quick_actions:
+  - name: "Start Development Server"
+    command: "npm run dev"
+    description: "Start server with nodemon for auto-reload"
+    icon: "🚀"
+    
+  - name: "Start Production Server"
+    command: "npm start"
+    description: "Start server in production mode"
+    icon: "▶️"
+    
+  - name: "Initialize Database"
+    command: "npm run init-db"
+    description: "Initialize MongoDB with admin user and sample data"
+    icon: "🗄️"
+    
+  - name: "Create Admin User"
+    command: "npm run create-admin"
+    description: "Create admin user only (if DB already has data)"
+    icon: "👤"
+    
+  - name: "Check MongoDB Connection"
+    command: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ Connected' : '❌ Failed'))\""
+    description: "Test MongoDB connection"
+    icon: "🔌"
+
+# Custom commands
+commands:
+  # Database management
+  db-status:
+    command: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ MongoDB Connected' : '❌ MongoDB Failed'))\""
+    description: "Check MongoDB connection status"
+    
+  db-reset:
+    command: "npm run init-db"
+    description: "Reset and initialize database with fresh data"
+    confirm: true
+    
+  # Server management  
+  server-dev:
+    command: "npm run dev"
+    description: "Start development server with auto-reload"
+    
+  server-prod:
+    command: "NODE_ENV=production npm start"
+    description: "Start production server"
+    
+  # User management
+  create-admin:
+    command: "npm run create-admin"
+    description: "Create admin user (admin@questcraft.com/admin123)"
+    
+  # Development utilities
+  logs-clear:
+    command: "clear && echo '🧹 Logs cleared - Starting fresh...'"
+    description: "Clear terminal and show fresh start message"
+    
+  deps-check:
+    command: "npm audit && npm outdated"
+    description: "Check for security vulnerabilities and outdated packages"
+    
+  deps-fix:
+    command: "npm audit fix"
+    description: "Automatically fix security vulnerabilities"
+
+# File patterns for project context
+file_patterns:
+  models: ["models/*.js"]
+  controllers: ["controllers/*.js"] 
+  routes: ["routes/*.js"]
+  middleware: ["middleware/*.js"]
+  frontend: ["public/**/*.js", "public/**/*.html", "public/**/*.css"]
+  config: ["config/*.js", "*.js", "*.json", "*.md"]
+  scripts: ["scripts/*.js"]
+
+# Development workflows
+workflows:
+  setup:
+    description: "First-time project setup"
+    steps:
+      - "npm install"
+      - "echo '📋 Next: Configure MONGODB_URI in environment'"
+      - "echo '🔑 Then run: warp db-reset'"
+      - "echo '🚀 Finally: warp server-dev'"
+      
+  fresh-start:
+    description: "Clean restart of development environment"
+    steps:
+      - command: "warp logs-clear"
+      - command: "warp db-status"
+      - command: "warp server-dev"
+        
+  deploy-prep:
+    description: "Prepare for deployment"
+    steps:
+      - "npm audit fix"
+      - "NODE_ENV=production npm start"
+      - "echo '✅ Production build successful'"
+
+# Shortcuts for common file access
+shortcuts:
+  config: "config/database.js"
+  main: "app.js"
+  server: "server.js"
+  routes: "routes/"
+  models: "models/"
+  frontend: "public/app.js"
+  styles: "public/style.css"
+  docs: "README.md"
+  setup: "SETUP.md"
+  warp-config: "WARP.md"
+
+# AI context hints
+ai_context:
+  - "This is a gamified learning platform built with Node.js and MongoDB"
+  - "Users earn XP and coins by completing assignments and exams"
+  - "Quests reward unique badges (not XP/coins)"  
+  - "Admin users can create quests, events, and shop items"
+  - "Session-based authentication with bcrypt password hashing"
+  - "MongoDB connection required for full functionality"
+  - "Default admin: admin@questcraft.com / admin123"

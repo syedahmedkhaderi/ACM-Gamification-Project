@@ -1,0 +1,72 @@
+# QuestCraft Development Aliases
+# Quick shortcuts for common development tasks
+
+# Server Management
+aliases:
+  # Quick server commands
+  dev: "npm run dev"
+  start: "npm start"  
+  serve: "npm run dev"
+  prod: "NODE_ENV=production npm start"
+  
+  # Database shortcuts
+  db: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ MongoDB Connected' : '❌ MongoDB Failed'))\""
+  db-init: "npm run init-db"
+  db-reset: "npm run init-db"
+  admin: "npm run create-admin"
+  
+  # Development utilities
+  cls: "clear && echo '🎮 QuestCraft Development Environment' && echo '=================================' && pwd"
+  status: "echo '🎯 QuestCraft Status:' && npm list --depth=0 2>/dev/null | head -5 && echo && node -e \"require('./config/database')().then(connected => console.log('Database:', connected ? '✅ Connected' : '❌ Disconnected'))\""
+  
+  # Package management
+  deps: "npm install"
+  audit: "npm audit"
+  fix: "npm audit fix"
+  outdated: "npm outdated"
+  
+  # File access shortcuts
+  routes: "ls -la routes/"
+  models: "ls -la models/"
+  controllers: "ls -la controllers/"
+  config: "cat config/database.js"
+  logs: "tail -f logs/*.log 2>/dev/null || echo 'No log files found'"
+  
+  # Git shortcuts (if using git)
+  st: "git status"
+  log: "git log --oneline -10"
+  branch: "git branch"
+  
+  # Development workflow
+  fresh: "clear && echo '🔄 Fresh start...' && npm run dev"
+  check: "echo '🔍 Checking system...' && npm audit && node -e \"require('./config/database')().then(connected => console.log('DB:', connected ? '✅' : '❌'))\""
+  
+  # MongoDB Atlas helpers
+  mongo-help: "echo '📚 MongoDB Setup Help:' && echo '1. Get connection string from MongoDB Atlas' && echo '2. Add to environment as MONGODB_URI' && echo '3. Run: npm run init-db' && echo '4. Login: admin@questcraft.com / admin123'"
+  
+  # Feature testing
+  test-admin: "echo '🔑 Admin Login:' && echo 'Email: admin@questcraft.com' && echo 'Password: admin123' && echo 'URL: http://localhost:5000/pages/auth.html'"
+  test-quest: "echo '🏆 Quest System:' && echo '- Admin creates quests with badge rewards' && echo '- Students complete quests to earn badges' && echo '- View in profile page'"
+  test-shop: "echo '🛒 Shop System:' && echo '- Students earn coins from assignments/exams' && echo '- Purchase items with coins' && echo '- Items stored in inventory'"
+
+# Command groups for better organization
+command_groups:
+  server:
+    description: "Server management commands"
+    commands: ["dev", "start", "serve", "prod", "fresh"]
+    
+  database: 
+    description: "Database and MongoDB commands"
+    commands: ["db", "db-init", "db-reset", "admin", "mongo-help"]
+    
+  development:
+    description: "Development utilities"
+    commands: ["cls", "status", "check", "deps", "audit", "fix"]
+    
+  testing:
+    description: "Feature testing shortcuts" 
+    commands: ["test-admin", "test-quest", "test-shop"]
+    
+  files:
+    description: "File and directory shortcuts"
+    commands: ["routes", "models", "controllers", "config", "logs"]

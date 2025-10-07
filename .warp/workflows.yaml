@@ -1,0 +1,228 @@
+# QuestCraft Development Workflows
+# Pre-defined workflows for common development scenarios
+
+workflows:
+  # Initial project setup
+  project_setup:
+    name: "🆕 QuestCraft Project Setup"
+    description: "Complete setup for new QuestCraft installation"
+    category: "setup"
+    estimated_time: "10 minutes"
+    steps:
+      - name: "Check system requirements"
+        command: "node --version && npm --version"
+        description: "Verify Node.js and npm are installed"
+        
+      - name: "Install dependencies"
+        command: "npm install"
+        description: "Install all required Node.js packages"
+        
+      - name: "Check MongoDB connection"
+        command: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ MongoDB Ready' : '❌ MongoDB Setup Required'))\""
+        description: "Test MongoDB Atlas connection"
+        
+      - name: "Initialize database"
+        command: "npm run init-db"
+        description: "Set up database with admin user and sample data"
+        confirm: true
+        
+      - name: "Start development server"
+        command: "npm run dev"
+        description: "Launch QuestCraft in development mode"
+        background: true
+        
+    post_setup:
+      - "echo '🎉 QuestCraft setup complete!'"
+      - "echo '🔗 Visit: http://localhost:5000'"
+      - "echo '🔑 Admin login: admin@questcraft.com / admin123'"
+
+  # Daily development routine
+  daily_dev:
+    name: "☀️ Daily Development Start"
+    description: "Standard development workflow for daily work"
+    category: "development" 
+    estimated_time: "1 minute"
+    steps:
+      - name: "Clear terminal"
+        command: "clear"
+        description: "Start with clean terminal"
+        
+      - name: "Check system status"
+        command: "echo '🎮 QuestCraft Development' && echo '======================' && pwd"
+        description: "Display project info"
+        
+      - name: "Verify database connection"
+        command: "node -e \"require('./config/database')().then(connected => console.log('Database:', connected ? '✅ Connected' : '❌ Disconnected'))\""
+        description: "Check MongoDB status"
+        
+      - name: "Check for updates"
+        command: "npm outdated | head -5"
+        description: "Quick dependency check"
+        
+      - name: "Start development server"
+        command: "npm run dev"
+        description: "Launch with auto-reload"
+        background: true
+
+  # Database management workflow
+  database_management:
+    name: "🗄️ Database Management"
+    description: "MongoDB database operations and maintenance"
+    category: "database"
+    estimated_time: "5 minutes" 
+    steps:
+      - name: "Check connection"
+        command: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ Connected to MongoDB' : '❌ Connection Failed'))\""
+        description: "Test MongoDB Atlas connection"
+        
+      - name: "Backup existing data (optional)"
+        command: "echo 'ℹ️  For production: use mongodump to backup data'"
+        description: "Backup reminder for production databases"
+        
+      - name: "Reset database"
+        command: "npm run init-db"
+        description: "Initialize with fresh sample data"
+        confirm: true
+        
+      - name: "Verify admin user"
+        command: "echo '👑 Admin credentials:' && echo 'Email: admin@questcraft.com' && echo 'Password: admin123'"
+        description: "Display admin login details"
+
+  # Feature testing workflow
+  feature_testing:
+    name: "🧪 Feature Testing"
+    description: "Test QuestCraft features and functionality"
+    category: "testing"
+    estimated_time: "15 minutes"
+    steps:
+      - name: "Start test server"
+        command: "npm run dev"
+        description: "Launch development server"
+        background: true
+        wait: 3
+        
+      - name: "Test admin login"
+        command: "echo '🔐 Testing Admin Features:' && echo '1. Visit: http://localhost:5000/pages/auth.html' && echo '2. Login: admin@questcraft.com / admin123' && echo '3. Test quest creation, events, shop management'"
+        description: "Admin functionality checklist"
+        
+      - name: "Test user features"
+        command: "echo '👤 Testing User Features:' && echo '1. Register new user account' && echo '2. Create assignments and exams' && echo '3. Test study sessions and Pomodoro timer' && echo '4. Complete quests and earn badges' && echo '5. Use shop and inventory'"
+        description: "User functionality checklist"
+        
+      - name: "Test gamification"
+        command: "echo '🏆 Testing Gamification:' && echo '• XP/coin earning from assignments' && echo '• Badge earning from quest completion' && echo '• Leaderboard ranking system' && echo '• Shop purchase functionality'"
+        description: "Gamification features checklist"
+
+  # Production deployment prep
+  deploy_prep:
+    name: "🚀 Production Deployment Prep"
+    description: "Prepare QuestCraft for production deployment"
+    category: "deployment"
+    estimated_time: "10 minutes"
+    steps:
+      - name: "Security audit"
+        command: "npm audit"
+        description: "Check for security vulnerabilities"
+        
+      - name: "Fix security issues"
+        command: "npm audit fix"
+        description: "Auto-fix security vulnerabilities"
+        
+      - name: "Test production build"
+        command: "NODE_ENV=production npm start"
+        description: "Test production server startup"
+        timeout: 10
+        
+      - name: "Environment checklist"
+        command: "echo '✅ Production Checklist:' && echo '• MongoDB URI configured' && echo '• SESSION_SECRET set' && echo '• Admin password changed' && echo '• CORS configured if needed' && echo '• Error logging set up'"
+        description: "Production readiness checklist"
+
+  # MongoDB troubleshooting
+  mongo_troubleshoot:
+    name: "🔧 MongoDB Troubleshooting"
+    description: "Diagnose and fix MongoDB connection issues"
+    category: "troubleshooting" 
+    estimated_time: "15 minutes"
+    steps:
+      - name: "Test basic connection"
+        command: "node -e \"require('./config/database')().then(connected => console.log(connected ? '✅ Connected' : '❌ Failed'))\""
+        description: "Basic connection test"
+        
+      - name: "Check environment variables"
+        command: "echo 'MONGODB_URI:' && echo ${MONGODB_URI:0:30}... && echo '(showing first 30 chars only)'"
+        description: "Verify MONGODB_URI is set"
+        
+      - name: "MongoDB setup help"
+        command: "echo '📚 MongoDB Atlas Setup Steps:' && echo '1. Visit https://cloud.mongodb.com' && echo '2. Get complete connection string' && echo '3. Add to environment as MONGODB_URI' && echo '4. Format: mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/questcraft' && echo '5. Run: npm run init-db'"
+        description: "Step-by-step MongoDB setup guide"
+        
+      - name: "Test after setup"
+        command: "read -p 'Press Enter after configuring MONGODB_URI...' && npm run init-db"
+        description: "Test connection with fresh database"
+
+  # Code quality workflow  
+  code_quality:
+    name: "📊 Code Quality Check"
+    description: "Check code quality, dependencies, and project health"
+    category: "maintenance"
+    estimated_time: "5 minutes"
+    steps:
+      - name: "Dependency audit"
+        command: "npm audit"
+        description: "Check for security vulnerabilities"
+        
+      - name: "Check outdated packages"
+        command: "npm outdated"
+        description: "List outdated dependencies"
+        
+      - name: "List installed packages"
+        command: "npm list --depth=0"
+        description: "Show current package versions"
+        
+      - name: "Check file structure"
+        command: "tree -I node_modules -L 3 || find . -type d -not -path './node_modules*' | head -20"
+        description: "Display project structure"
+        
+      - name: "Database connection test"
+        command: "node -e \"require('./config/database')().then(connected => console.log('Database:', connected ? '✅ OK' : '❌ Failed'))\""
+        description: "Final connection verification"
+
+# Workflow categories
+categories:
+  setup:
+    icon: "🆕"
+    description: "Initial project setup and configuration"
+    
+  development:
+    icon: "⚡"
+    description: "Daily development workflows"
+    
+  database:
+    icon: "🗄️"
+    description: "Database operations and management"
+    
+  testing:
+    icon: "🧪"
+    description: "Feature testing and validation"
+    
+  deployment:
+    icon: "🚀"  
+    description: "Production deployment preparation"
+    
+  troubleshooting:
+    icon: "🔧"
+    description: "Problem diagnosis and resolution"
+    
+  maintenance:
+    icon: "🔧"
+    description: "Code quality and maintenance tasks"
+
+# Quick workflow shortcuts
+shortcuts:
+  setup: "project_setup"
+  daily: "daily_dev" 
+  db: "database_management"
+  test: "feature_testing"
+  deploy: "deploy_prep"
+  fix: "mongo_troubleshoot"
+  quality: "code_quality"

@@ -10,21 +10,32 @@ QuestCraft is a gamified learning platform that transforms everyday study tasks 
 - **Database**: MongoDB (Mongoose ODM)
 - **Authentication**: Session-based with bcrypt password hashing
 - **File Uploads**: Multer for avatar images
-- **Port**: 5000
+- **Port**: 5009
 
-## Recent Changes
-- **2025-10-07**: Major v2.0 Update
-  - ✅ Converted from in-memory to MongoDB database
-  - ✅ Implemented user authentication (register/login/logout)
-  - ✅ Created admin account system with protected routes
-  - ✅ Converted quests to badge-based rewards (admin-editable only)
-  - ✅ Built inventory system with purchase functionality
-  - ✅ Created events section (admin-managed)
-  - ✅ Added leaderboard (sorted by GPA → study hours → badges)
-  - ✅ Implemented profile picture selection (emoji/upload)
-  - ✅ Created user profile page
-  - ✅ Updated all pages with matching dark theme UI
+### Admin Account
+```
+Email: admin@questcraft.com
+Password: admin123
+```
 
+### For Students
+- ✅ Complete assignments and earn XP/coins
+- ✅ Schedule and track exams
+- ✅ Pomodoro study timer (25 min sessions)
+- ✅ Track grades with automatic GPA calculation
+- ✅ Complete quests to earn badges
+- ✅ Purchase items from shop with coins
+- ✅ Customize profile with emoji/uploaded avatar
+- ✅ Showcase earned badges
+- ✅ View leaderboard rankings
+- ✅ See upcoming events
+
+
+**Admin Capabilities:**
+- Create/edit/delete quests
+- Manage events
+- Manage shop items
+- Access all features
 ## Project Architecture
 
 ### Backend Structure
@@ -170,3 +181,34 @@ npm start
 ## MongoDB Setup Notes
 ⚠️ **Current Issue**: The MONGODB_URI secret appears to have an incomplete cluster URL. 
 Please update with a complete MongoDB Atlas connection string. See MONGODB_ISSUE.md for details.
+
+```
+questcraft/
+├── config/
+│   └── database.js          # MongoDB connection
+├── models/                  # Mongoose schemas
+│   ├── User.js
+│   ├── Assignment.js
+│   ├── Exam.js
+│   ├── Grade.js
+│   ├── StudySession.js
+│   ├── Quest.js
+│   ├── UserQuest.js
+│   ├── Activity.js
+│   ├── Event.js
+│   └── ShopItem.js
+├── controllers/             # Business logic
+├── routes/                  # API endpoints
+├── middleware/              # Auth & upload middleware
+├── public/                  # Frontend
+│   ├── pages/
+│   │   ├── auth.html       # Login/Register
+│   │   ├── profile.html    # User profile
+│   │   ├── events.html     # Events
+│   │   └── ...
+│   ├── app.js              # Frontend logic
+│   └── style.css           # Dark theme styles
+└── scripts/
+    ├── createAdmin.js      # Create admin user
+    └── initializeData.js   # Full DB initialization
+```
