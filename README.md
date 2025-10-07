@@ -2,15 +2,23 @@
 
 A comprehensive web application that gamifies the academic experience for students, featuring assignment tracking, study sessions, quests, achievements, and a virtual shop system. Built for the Association for Computing Machinery (ACM) to enhance student engagement and academic performance.
 
-## 🌟 Features
+## 🌟 Features and Gamification Mechanics
 
-### 🎮 Core Gamification Features
-- **XP & Leveling System**: Earn experience points for completing tasks and level up
-- **Virtual Currency**: Coins system for purchasing items in the shop
-- **Achievement System**: Badges and titles for various accomplishments
-- **Quest System**: Daily and weekly challenges with rewards
-- **Leaderboard**: Competitive ranking system among students
-- **Study Streaks**: Track consecutive study days
+### XP System
+- **Assignment Completion**: 50-200 XP based on priority
+- **Study Sessions**: 1 XP per minute of study time
+- **Exam Completion**: 50-300 XP based on difficulty
+- **Quest Completion**: Variable XP based on quest type
+
+### Leveling System
+- **Level Calculation**: `Math.floor(xp / 100) + 1`
+- **Progressive Rewards**: Higher levels unlock better rewards
+- **Visual Feedback**: XP bars and level indicators
+
+### Currency System
+- **Coin Earning**: 10-50 coins per completed task
+- **Shop Economy**: Balanced pricing for virtual items
+- **Reward Scaling**: Higher rewards for more difficult tasks
 
 ### 📚 Academic Management
 - **Assignment Tracking**: Create, manage, and complete assignments with XP rewards
@@ -91,58 +99,6 @@ A comprehensive web application that gamifies the academic experience for studen
 - Users can purchase many ShopItems (stored in inventory)
 - Activities track all user actions for the activity feed
 
-## 🚀 API Endpoints
-
-### Authentication (`/api/auth`)
-- `POST /login` - User login
-- `POST /register` - User registration
-- `POST /logout` - User logout
-- `GET /check` - Authentication status check
-
-### User Management (`/api/user`)
-- `GET /` - Get current user data
-- `PUT /` - Update user profile
-- `GET /stats` - User statistics (GPA, study hours, etc.)
-- `GET /leaderboard` - User rankings
-
-### Assignments (`/api/assignments`)
-- `GET /` - List user assignments
-- `POST /` - Create new assignment
-- `PUT /:id` - Update assignment
-- `DELETE /:id` - Delete assignment
-- `POST /:id/complete` - Mark assignment as complete
-
-### Exams (`/api/exams`)
-- `GET /` - List user exams
-- `POST /` - Schedule new exam
-- `PUT /:id` - Update exam
-- `DELETE /:id` - Delete exam
-- `POST /:id/complete` - Mark exam as complete
-
-### Study Sessions (`/api/study-sessions`)
-- `GET /` - List study sessions
-- `POST /` - Create new study session
-
-### Grades (`/api/grades`)
-- `GET /` - List user grades
-- `POST /` - Add new grade
-- `DELETE /:id` - Delete grade
-
-### Quests (`/api/quests`)
-- `GET /` - List available quests
-- `POST /` - Create new quest (admin only)
-
-### Shop (`/api/shop`)
-- `GET /` - List shop items
-- `POST /` - Create shop item (admin only)
-- `POST /:id/purchase` - Purchase item
-- `DELETE /:id` - Delete shop item (admin only)
-
-### Events (`/api/events`)
-- `GET /` - List upcoming events
-- `POST /` - Create new event (admin only)
-- `DELETE /:id` - Delete event (admin only)
-
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
@@ -209,71 +165,19 @@ A comprehensive web application that gamifies the academic experience for studen
 2. **User Oversight**: Monitor student progress and engagement
 3. **System Configuration**: Manage rewards, XP values, and shop items
 
-## 🎨 Design Features
+## 🔮 Future Enhancements
 
-### Visual Design
-- **Dark Theme**: Modern dark UI with purple/blue gradient accents
-- **Responsive Layout**: Mobile-first design with collapsible navigation
-- **Interactive Elements**: Hover effects, animations, and smooth transitions
-- **Accessibility**: High contrast colors and keyboard navigation support
+### Planned Features
+- **Mobile App**: React Native or Flutter mobile application
+- **Advanced Analytics**: Detailed progress tracking and insights
+- **AI Integration**: Personalized study recommendations
+- **Advanced Gamification**: More quest types and achievement systems
 
-### User Experience
-- **Intuitive Navigation**: Clear menu structure and breadcrumbs
-- **Real-time Feedback**: Instant notifications and progress updates
-- **Gamification Elements**: Progress bars, achievement badges, and level indicators
-- **Data Visualization**: Charts and graphs for academic progress
-
-## 🔧 Technical Details
-
-### Security Features
-- **Password Hashing**: bcrypt with salt rounds
-- **Session Management**: Secure session storage with MongoDB
-- **Input Validation**: Server-side validation for all user inputs
-- **Authentication Middleware**: Protected routes with role-based access
-
-### Performance Optimizations
-- **Database Indexing**: Optimized queries for user data retrieval
-- **Session Caching**: Efficient session storage and retrieval
-- **Frontend Optimization**: Minimal JavaScript bundle with efficient DOM manipulation
-- **Responsive Images**: Optimized asset loading
-
-### Scalability Considerations
-- **Modular Architecture**: Separated concerns with MVC pattern
-- **Database Design**: Normalized schema with efficient relationships
-- **API Design**: RESTful endpoints for easy frontend integration
-- **Session Management**: Scalable session storage with MongoDB
-
-## 📊 Gamification Mechanics
-
-### XP System
-- **Assignment Completion**: 50-200 XP based on priority
-- **Study Sessions**: 1 XP per minute of study time
-- **Exam Completion**: 50-300 XP based on difficulty
-- **Quest Completion**: Variable XP based on quest type
-
-### Leveling System
-- **Level Calculation**: `Math.floor(xp / 100) + 1`
-- **Progressive Rewards**: Higher levels unlock better rewards
-- **Visual Feedback**: XP bars and level indicators
-
-### Currency System
-- **Coin Earning**: 10-50 coins per completed task
-- **Shop Economy**: Balanced pricing for virtual items
-- **Reward Scaling**: Higher rewards for more difficult tasks
-
-## 🚀 Deployment
-
-### Production Setup
-1. **Environment Variables**: Set production MongoDB URI and session secret
-2. **Database**: Use MongoDB Atlas for cloud database
-3. **Session Security**: Use strong, unique session secrets
-4. **HTTPS**: Enable SSL/TLS for secure connections
-5. **Monitoring**: Set up logging and error tracking
-
-### Recommended Hosting
-- **Backend**: Heroku, Railway, or DigitalOcean
-- **Database**: MongoDB Atlas
-- **Frontend**: Can be served from the same server or CDN
+### Technical Improvements
+- **API Versioning**: Versioned API endpoints
+- **Caching**: Redis integration for improved performance
+- **Testing**: Comprehensive test suite with Jest
+- **Monitoring**: Application performance monitoring
 
 ## 🤝 Contributing
 
@@ -293,20 +197,6 @@ A comprehensive web application that gamifies the academic experience for studen
 ## 📄 License
 
 This project is licensed under the ISC License. See the package.json file for details.
-
-## 🔮 Future Enhancements
-
-### Planned Features
-- **Mobile App**: React Native or Flutter mobile application
-- **Advanced Analytics**: Detailed progress tracking and insights
-- **AI Integration**: Personalized study recommendations
-- **Advanced Gamification**: More quest types and achievement systems
-
-### Technical Improvements
-- **API Versioning**: Versioned API endpoints
-- **Caching**: Redis integration for improved performance
-- **Testing**: Comprehensive test suite with Jest
-- **Monitoring**: Application performance monitoring
 
 ---
 
