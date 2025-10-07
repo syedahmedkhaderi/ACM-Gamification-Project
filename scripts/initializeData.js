@@ -274,23 +274,23 @@ const initializeData = async () => {
     await mongoose.connect(mongoURI);
     console.log('✅ Connected to MongoDB');
 
-    let admin = await User.findOne({ email: 'admin@questcraft.com' });
+    let admin = await User.findOne({ email: 'admin@acmlearning.com' });
     let isNewAdmin = false;
     
     if (!admin) {
       admin = new User({
-        email: 'admin@questcraft.com',
+        email: 'admin@acmlearning.com',
         password: 'admin123',
         name: 'Admin',
         role: 'admin',
-        xp: 1000,
-        level: 10,
-        coins: 5000,
-        title: 'Quest Master'
+        xp: 10000,
+        level: 'Max',
+        coins: 1000000,
+        title: 'ACM Administrator'
       });
       await admin.save();
       isNewAdmin = true;
-      console.log('✅ Admin user created (admin@questcraft.com / admin123)');
+      console.log('✅ Admin user created (admin@acmlearning.com / admin123)');
     }
     
     // Create sample data for admin user if new or if no existing data
@@ -385,6 +385,76 @@ const initializeData = async () => {
             description: 'Consistent academic excellence'
           },
           expiresAt: endOfMonth,
+          isActive: true
+        },
+        {
+          title: 'Event Participant',
+          description: 'Attend 3 ACM events',
+          type: 'weekly',
+          target: 3,
+          badgeReward: {
+            id: 'badge_event_participant',
+            name: 'Event Participant',
+            icon: '🎉',
+            description: 'Active ACM community member'
+          },
+          expiresAt: endOfWeek,
+          isActive: true
+        },
+        {
+          title: 'Code Master',
+          description: 'Complete 10 coding assignments',
+          type: 'weekly',
+          target: 10,
+          badgeReward: {
+            id: 'badge_code_master',
+            name: 'Code Master',
+            icon: '💻',
+            description: 'Programming excellence'
+          },
+          expiresAt: endOfWeek,
+          isActive: true
+        },
+        {
+          title: 'Early Bird',
+          description: 'Complete 3 assignments before deadline',
+          type: 'daily',
+          target: 3,
+          badgeReward: {
+            id: 'badge_early_bird',
+            name: 'Early Bird',
+            icon: '🐦',
+            description: 'Always ahead of schedule'
+          },
+          expiresAt: endOfDay,
+          isActive: true
+        },
+        {
+          title: 'Team Player',
+          description: 'Participate in 2 group projects',
+          type: 'weekly',
+          target: 2,
+          badgeReward: {
+            id: 'badge_team_player',
+            name: 'Team Player',
+            icon: '🤝',
+            description: 'Collaboration champion'
+          },
+          expiresAt: endOfWeek,
+          isActive: true
+        },
+        {
+          title: 'Knowledge Seeker',
+          description: 'Study 10 hours this week',
+          type: 'weekly',
+          target: 600,
+          badgeReward: {
+            id: 'badge_knowledge_seeker',
+            name: 'Knowledge Seeker',
+            icon: '📖',
+            description: 'Dedicated to learning'
+          },
+          expiresAt: endOfWeek,
           isActive: true
         }
       ];

@@ -143,6 +143,7 @@ async function initializeApp() {
     }
     if (document.getElementById('shopCoins')) {
         updateShopCoins();
+        await loadShopItems();
     }
     if (document.getElementById('eventsList')) {
         await loadEvents();
@@ -475,7 +476,7 @@ async function addAssignment() {
     const priority = document.getElementById('newAssignmentPriority').value;
 
     if (!title || !subject || !dueDate) {
-        alert('Please fill in all required fields');
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
         return;
     }
 
@@ -483,6 +484,7 @@ async function addAssignment() {
         await fetch(`${API_URL}/assignments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ title, subject, description, dueDate, priority })
         });
         closeModal();
@@ -490,6 +492,7 @@ async function addAssignment() {
         loadAssignments();
     } catch (error) {
         console.error('Error adding assignment:', error);
+        showNotification('❌ Failed to create assignment');
     }
 }
 
@@ -611,7 +614,7 @@ async function addExam() {
     const studyHoursNeeded = document.getElementById('newExamStudyHours').value;
 
     if (!title || !subject || !date) {
-        alert('Please fill in all required fields');
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
         return;
     }
 
@@ -619,6 +622,7 @@ async function addExam() {
         await fetch(`${API_URL}/exams`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ title, subject, type, date, difficulty, studyHoursNeeded })
         });
         closeModal();
@@ -626,6 +630,7 @@ async function addExam() {
         loadExams();
     } catch (error) {
         console.error('Error adding exam:', error);
+        showNotification('❌ Failed to schedule exam');
     }
 }
 
@@ -822,8 +827,8 @@ async function addGrade() {
     const maxScore = parseFloat(document.getElementById('newGradeMaxScore').value);
     const date = document.getElementById('newGradeDate').value;
 
-    if (!examTitle || !subject || score === '' || !maxScore || !date) {
-        alert('Please fill in all required fields');
+    if (!examTitle || !subject || !Number.isFinite(score) || !Number.isFinite(maxScore) || !date) {
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
         return;
     }
 
@@ -831,6 +836,7 @@ async function addGrade() {
         await fetch(`${API_URL}/grades`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ examTitle, subject, score, maxScore, date })
         });
         closeModal();
@@ -838,6 +844,7 @@ async function addGrade() {
         loadGrades();
     } catch (error) {
         console.error('Error adding grade:', error);
+        showNotification('❌ Failed to add grade');
     }
 }
 
@@ -856,6 +863,11 @@ async function deleteGrade(id) {
 
 async function loadQuests() {
     try {
+        if (userData && userData.role === 'admin') {
+            const addBtn = document.getElementById('addQuestBtn');
+            if (addBtn) addBtn.style.display = 'block';
+        }
+        
         const response = await fetch(`${API_URL}/quests`);
         const quests = await response.json();
 
@@ -887,9 +899,11 @@ async function loadQuests() {
                             ⏰ ${hoursLeft}h left
                         </span>
                     </div>
-                    <div style="margin-top: 1rem; color: var(--accent-purple); font-weight: 600;">
-                        Reward: ${quest.xpReward} XP, ${quest.coinReward} Coins
-                    </div>
+                    ${quest.badgeReward ? `
+                        <div style="margin-top: 1rem; color: var(--accent-purple); font-weight: 600;">
+                            Reward: ${quest.badgeReward.icon} ${quest.badgeReward.name} Badge
+                        </div>
+                    ` : ''}
                     ${quest.status === 'completed' ? 
                         '<div style="color: var(--success); font-weight: 600; margin-top: 1rem;">✅ Completed!</div>' : ''}
                 </div>
@@ -1075,25 +1089,50 @@ async function handleRegister() {
 }
 
 async function handleLogout() {
-    if (confirm('Are you sure you want to logout?')) {
-        try {
-            const response = await fetch(`${API_URL}/auth/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            });
-            
-            if (response.ok) {
-                showNotification('✅ Logged out successfully!');
-                setTimeout(() => {
-                    window.location.href = '/pages/auth.html';
-                }, 1000);
-            } else {
+    const modalBody = document.getElementById('modalBody');
+    if (!modalBody) {
+        if (confirm('Are you sure you want to logout?')) {
+            performLogout();
+        }
+        return;
+    }
+    
+    modalBody.innerHTML = `
+        <h2 style="margin-bottom: 1rem;">Confirm Logout</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Are you sure you want to logout?</p>
+        <div style="display:flex; gap: 0.75rem; justify-content: flex-end;">
+            <button id="logoutCancelBtn" class="btn btn-secondary">Cancel</button>
+            <button id="logoutConfirmBtn" class="btn btn-primary">Logout</button>
+        </div>
+    `;
+    const modal = document.getElementById('modal');
+    modal.style.display = 'block';
+    
+    document.getElementById('logoutCancelBtn').addEventListener('click', () => closeModal());
+    document.getElementById('logoutConfirmBtn').addEventListener('click', () => {
+        closeModal();
+        performLogout();
+    });
+}
+
+async function performLogout() {
+    try {
+        const response = await fetch(`${API_URL}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            showNotification('✅ Logged out successfully!');
+            setTimeout(() => {
                 window.location.href = '/pages/auth.html';
-            }
-        } catch (error) {
-            console.error('Logout error:', error);
+            }, 1000);
+        } else {
             window.location.href = '/pages/auth.html';
         }
+    } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = '/pages/auth.html';
     }
 }
 
@@ -1279,7 +1318,7 @@ async function addEvent() {
     const type = document.getElementById('newEventType').value;
     
     if (!title || !date || !location) {
-        alert('Please fill in all required fields');
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
         return;
     }
     
@@ -1287,6 +1326,7 @@ async function addEvent() {
         await fetch(`${API_URL}/events`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ title, description, date, location, type })
         });
         closeModal();
@@ -1294,6 +1334,7 @@ async function addEvent() {
         loadEvents();
     } catch (error) {
         console.error('Error adding event:', error);
+        showNotification('❌ Failed to create event');
     }
 }
 
@@ -1399,20 +1440,67 @@ function showPurchaseConfirmation(itemId, itemName, cost, icon) {
 
 async function confirmPurchase(itemId, itemName, cost, icon) {
     try {
-        const newCoins = userData.coins - cost;
-        const response = await fetch(`${API_URL}/user`, {
-            method: 'PUT',
+        const response = await fetch(`${API_URL}/shop/${itemId}/purchase`, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ coins: newCoins, inventory: [...(userData.inventory || []), { id: itemId, name: itemName, icon }] })
+            credentials: 'include'
         });
-        userData = await response.json();
+        
+        if (!response.ok) {
+            const error = await response.json();
+            showNotification(`❌ ${error.error || 'Purchase failed'}`);
+            closeModal();
+            return;
+        }
+        
+        const data = await response.json();
+        userData = data.user;
         updateUserDisplay();
         closeModal();
         showNotification(`🎉 Purchased ${itemName}!`);
-        updateShopButtons();
+        loadShopItems();
     } catch (error) {
         console.error('Error purchasing item:', error);
         showNotification('❌ Purchase failed');
+        closeModal();
+    }
+}
+
+async function loadShopItems() {
+    try {
+        const response = await fetch(`${API_URL}/shop`);
+        const items = await response.json();
+        
+        if (userData && userData.role === 'admin') {
+            const addBtn = document.getElementById('addShopItemBtn');
+            if (addBtn) addBtn.style.display = 'block';
+        }
+        
+        const container = document.getElementById('shopItemsGrid');
+        if (!container) return;
+        
+        if (items.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">No shop items available.</p>';
+            return;
+        }
+        
+        container.innerHTML = items.map(item => `
+            <div class="shop-item" data-item-id="${item._id}" data-price="${item.price}">
+                <div class="item-icon">${item.icon}</div>
+                <h4>${item.name}</h4>
+                <p>${item.description}</p>
+                <button class="btn btn-primary shop-buy-btn" 
+                    onclick="showPurchaseConfirmation('${item._id}', '${item.name}', ${item.price}, '${item.icon}')"
+                    ${userData && userData.coins < item.price ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                    ${item.price} Coins
+                </button>
+                ${userData && userData.role === 'admin' ? `
+                    <button class="btn btn-danger" style="margin-top: 0.5rem;" onclick="deleteShopItem('${item._id}')">Delete</button>
+                ` : ''}
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading shop items:', error);
     }
 }
 
@@ -1470,26 +1558,117 @@ async function addQuest() {
     const badgeName = document.getElementById('newQuestBadgeName').value;
     
     if (!title || !target || !badgeIcon || !badgeName) {
-        alert('Please fill in all required fields');
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
         return;
     }
     
     try {
+        const questData = { 
+            title, 
+            description, 
+            type, 
+            target,
+            badgeReward: { 
+                id: `badge_${title.toLowerCase().replace(/\s+/g, '_')}`,
+                icon: badgeIcon, 
+                name: badgeName,
+                description: description || `Earned for completing ${title}`
+            }
+        };
+        
+        if (type === 'daily') {
+            const endOfDay = new Date();
+            endOfDay.setHours(23, 59, 59);
+            questData.expiresAt = endOfDay;
+        } else if (type === 'weekly') {
+            const endOfWeek = new Date();
+            endOfWeek.setDate(endOfWeek.getDate() + 7);
+            questData.expiresAt = endOfWeek;
+        }
+        
         await fetch(`${API_URL}/quests`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                title, 
-                description, 
-                type, 
-                target,
-                badge: { icon: badgeIcon, name: badgeName }
-            })
+            credentials: 'include',
+            body: JSON.stringify(questData)
         });
         closeModal();
         showNotification('✅ Quest created!');
         loadQuests();
     } catch (error) {
         console.error('Error adding quest:', error);
+        showNotification('❌ Failed to create quest');
+    }
+}
+
+function showAddShopItemModal() {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <h2>Add New Shop Item</h2>
+        <input type="text" id="newItemName" class="input" placeholder="Item Name" required>
+        <textarea id="newItemDescription" class="input" placeholder="Description" rows="2"></textarea>
+        <input type="number" id="newItemPrice" class="input" placeholder="Price in Coins" required min="1">
+        <input type="text" id="newItemIcon" class="input" placeholder="Icon (emoji)" required>
+        <select id="newItemType" class="input">
+            <option value="boost">Boost</option>
+            <option value="theme">Theme</option>
+            <option value="cosmetic">Cosmetic</option>
+            <option value="other">Other</option>
+        </select>
+        <button class="btn btn-primary" onclick="addShopItem()">Create Item</button>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+async function addShopItem() {
+    const name = document.getElementById('newItemName').value;
+    const description = document.getElementById('newItemDescription').value;
+    const price = parseInt(document.getElementById('newItemPrice').value);
+    const icon = document.getElementById('newItemIcon').value;
+    const type = document.getElementById('newItemType').value;
+    
+    if (!name || !price || !icon) {
+        await showErrorDialog('Please fill in all required fields', 'Missing Information');
+        return;
+    }
+    
+    try {
+        await fetch(`${API_URL}/shop`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ 
+                name, 
+                description, 
+                price, 
+                icon, 
+                type,
+                effect: `${type}_${name.toLowerCase().replace(/\s+/g, '_')}`,
+                isAvailable: true
+            })
+        });
+        closeModal();
+        showNotification('✅ Shop item created!');
+        loadShopItems();
+    } catch (error) {
+        console.error('Error adding shop item:', error);
+        showNotification('❌ Failed to create shop item');
+    }
+}
+
+async function deleteShopItem(id) {
+    const ok = await confirmDialog('Are you sure you want to delete this shop item?');
+    if (!ok) return;
+    
+    try {
+        await fetch(`${API_URL}/shop/${id}`, { 
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        showNotification('🗑️ Shop item deleted');
+        loadShopItems();
+    } catch (error) {
+        console.error('Error deleting shop item:', error);
+        showNotification('❌ Failed to delete shop item');
     }
 }

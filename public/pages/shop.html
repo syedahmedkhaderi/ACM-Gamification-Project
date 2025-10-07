@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Quest - Shop</title>
+    <title>ACM Learning - Shop</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="data:,">
 </head>
@@ -11,8 +11,8 @@
     <div class="notification-container" id="notificationContainer"></div>
     <nav class="navbar">
         <div class="nav-brand">
-            <div class="logo-badge"><span>SQ</span></div>
-            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+            <div class="logo-badge"><span>ACM</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">ACM Learning</a>
         </div>
         <button id="navToggle" class="nav-toggle">☰</button>
         <div class="nav-links">
@@ -36,49 +36,15 @@
         <section class="section active">
             <div class="section-header">
                 <h2>🛍️ Reward Shop</h2>
-                <div class="coin-display">
-                    <span class="coin-icon">💰</span>
-                    <span id="shopCoins">0</span> Coins
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="coin-display">
+                        <span class="coin-icon">💰</span>
+                        <span id="shopCoins">0</span> Coins
+                    </div>
+                    <button id="addShopItemBtn" class="btn btn-primary" onclick="showAddShopItemModal()" style="display: none;">+ New Item</button>
                 </div>
             </div>
-            <div id="shopItemsGrid" class="shop-grid">
-                <div class="shop-item" data-item-id="avatar" data-price="100">
-                    <div class="item-icon">🎨</div>
-                    <h4>Custom Avatar</h4>
-                    <p>Personalize your profile</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('avatar', 'Custom Avatar', 100, '🎨')">100 Coins</button>
-                </div>
-                <div class="shop-item" data-item-id="xp-boost" data-price="150">
-                    <div class="item-icon">⚡</div>
-                    <h4>XP Booster</h4>
-                    <p>2x XP for 1 hour</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('xp-boost', 'XP Booster', 150, '⚡')">150 Coins</button>
-                </div>
-                <div class="shop-item" data-item-id="streak-shield" data-price="200">
-                    <div class="item-icon">🛡️</div>
-                    <h4>Streak Shield</h4>
-                    <p>Protect your streak</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('streak-shield', 'Streak Shield', 200, '🛡️')">200 Coins</button>
-                </div>
-                <div class="shop-item" data-item-id="title" data-price="250">
-                    <div class="item-icon">🎭</div>
-                    <h4>Custom Title</h4>
-                    <p>Change your title</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('title', 'Custom Title', 250, '🎭')">250 Coins</button>
-                </div>
-                <div class="shop-item" data-item-id="quest-refresh" data-price="75">
-                    <div class="item-icon">🌟</div>
-                    <h4>Quest Refresher</h4>
-                    <p>Get new quests</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('quest-refresh', 'Quest Refresher', 75, '🌟')">75 Coins</button>
-                </div>
-                <div class="shop-item" data-item-id="theme" data-price="500">
-                    <div class="item-icon">💎</div>
-                    <h4>Premium Theme</h4>
-                    <p>Exclusive UI theme</p>
-                    <button class="btn btn-primary shop-buy-btn" onclick="showPurchaseConfirmation('theme', 'Premium Theme', 500, '💎')">500 Coins</button>
-                </div>
-            </div>
+            <div id="shopItemsGrid" class="shop-grid"></div>
         </section>
     </main>
 
@@ -92,8 +58,8 @@
     <script src="/app.js"></script>
     <footer class="site-footer">
         <div class="footer-inner">
-            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
-            <span>Made with ❤️ for learning.</span>
+            <span>© <span id="year"></span> ACM Learning. All rights reserved.</span>
+            <span>Association for Computing Machinery</span>
         </div>
     </footer>
 </body>

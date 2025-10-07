@@ -8,26 +8,26 @@ const createAdminUser = async () => {
     await mongoose.connect(mongoURI);
     console.log('Connected to MongoDB');
 
-    const existingAdmin = await User.findOne({ email: 'admin@questcraft.com' });
+    const existingAdmin = await User.findOne({ email: 'admin@acmlearning.com' });
     if (existingAdmin) {
       console.log('Admin user already exists');
       process.exit(0);
     }
 
     const admin = new User({
-      email: 'admin@questcraft.com',
+      email: 'admin@acmlearning.com',
       password: 'admin123',
       name: 'Admin',
       role: 'admin',
-      xp: 1000,
-      level: 10,
-      coins: 5000,
-      title: 'Quest Master'
+      xp: 10000,
+      level: 'Max',
+      coins: 1000000,
+      title: 'ACM Administrator'
     });
 
     await admin.save();
     console.log('✅ Admin user created successfully');
-    console.log('Email: admin@questcraft.com');
+    console.log('Email: admin@acmlearning.com');
     console.log('Password: admin123');
     console.log('Please change the password after first login!');
     
