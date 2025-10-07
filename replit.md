@@ -10,7 +10,8 @@ QuestCraft is a gamified learning platform that transforms everyday study tasks 
 - **Database**: MongoDB (Mongoose ODM)
 - **Authentication**: Session-based with bcrypt password hashing
 - **File Uploads**: Multer for avatar images
-- **Port**: 5009
+- **Port**: 5000
+- **Favicon**: Custom ACM logo badge (SVG)
 
 ### Admin Account
 ```
@@ -178,9 +179,10 @@ npm start
 - Badge-based quest rewards (not XP/coins for quests)
 - Leaderboard priority: GPA > study hours > badges
 
-## MongoDB Setup Notes
-⚠️ **Current Issue**: The MONGODB_URI secret appears to have an incomplete cluster URL. 
-Please update with a complete MongoDB Atlas connection string. See MONGODB_ISSUE.md for details.
+## Recent Updates
+- ✅ MongoDB database configured and connected
+- ✅ Custom ACM logo favicon added to all pages
+- ✅ Logo badge displays white "ACM" text on gradient background
 
 ```
 questcraft/
