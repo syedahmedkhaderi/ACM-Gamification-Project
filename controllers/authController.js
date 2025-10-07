@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { createSampleDataForUser } = require('../utils/sampleData');
 
 exports.register = async (req, res) => {
   try {
@@ -17,6 +18,15 @@ exports.register = async (req, res) => {
     });
 
     await user.save();
+
+    // Create sample data for new user
+    try {
+      await createSampleDataForUser(user._id, user.name);
+      console.log(`✅ Sample data created for new user: ${user.name} (${user.email})`);
+    } catch (error) {
+      console.error('Error creating sample data for new user:', error);
+      // Don't fail registration if sample data creation fails
+    }
 
     req.session.userId = user._id;
     req.session.role = user.role;

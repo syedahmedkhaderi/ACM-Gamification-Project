@@ -161,9 +161,16 @@ async function initializeApp() {
 
 async function loadUser() {
     try {
-        const response = await fetch(`${API_URL}/user`);
-        userData = await response.json();
-        updateUserDisplay();
+        const response = await fetch(`${API_URL}/user`, {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            userData = await response.json();
+            updateUserDisplay();
+        } else {
+            console.error('Error loading user:', response.status);
+        }
     } catch (error) {
         console.error('Error loading user:', error);
     }
@@ -214,6 +221,7 @@ async function updateUserName() {
             const response = await fetch(`${API_URL}/user`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ name: newName })
             });
             userData = await response.json();
@@ -241,7 +249,9 @@ async function loadDashboard() {
 
 async function loadStats() {
     try {
-        const response = await fetch(`${API_URL}/stats`);
+        const response = await fetch(`${API_URL}/stats`, {
+            credentials: 'include'
+        });
         const stats = await response.json();
 
         document.getElementById('statCompleted').textContent = stats.completedAssignments;
@@ -255,7 +265,9 @@ async function loadStats() {
 
 async function loadActiveQuests() {
     try {
-        const response = await fetch(`${API_URL}/quests`);
+        const response = await fetch(`${API_URL}/quests`, {
+            credentials: 'include'
+        });
         const quests = await response.json();
         const activeQuests = quests.filter(q => q.status === 'active').slice(0, 3);
 
@@ -946,12 +958,17 @@ async function checkAuth() {
     if (currentPage.includes('auth.html')) return;
     
     try {
-        const response = await fetch(`${API_URL}/user`);
-        if (!response.ok) {
+        const response = await fetch(`${API_URL}/auth/check`, {
+            credentials: 'include'
+        });
+        const result = await response.json();
+        
+        if (!result.authenticated) {
             window.location.href = '/pages/auth.html';
         }
     } catch (error) {
         console.error('Auth check error:', error);
+        window.location.href = '/pages/auth.html';
     }
 }
 
@@ -984,10 +1001,32 @@ async function handleLogin() {
         return;
     }
     
-    errorEl.textContent = 'Login functionality coming soon...';
-    setTimeout(() => {
-        window.location.href = '/';
-    }, 1000);
+    errorEl.textContent = '';
+    
+    try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ email, password })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showNotification('✅ Login successful!');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            errorEl.textContent = result.error || 'Login failed';
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        errorEl.textContent = 'Network error. Please try again.';
+    }
 }
 
 async function handleRegister() {
@@ -1007,15 +1046,54 @@ async function handleRegister() {
         return;
     }
     
-    errorEl.textContent = 'Registration functionality coming soon...';
-    setTimeout(() => {
-        window.location.href = '/';
-    }, 1000);
+    errorEl.textContent = '';
+    
+    try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ name, email, password })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showNotification('✅ Registration successful!');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            errorEl.textContent = result.error || 'Registration failed';
+        }
+    } catch (error) {
+        console.error('Registration error:', error);
+        errorEl.textContent = 'Network error. Please try again.';
+    }
 }
 
-function handleLogout() {
+async function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
-        window.location.href = '/pages/auth.html';
+        try {
+            const response = await fetch(`${API_URL}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                showNotification('✅ Logged out successfully!');
+                setTimeout(() => {
+                    window.location.href = '/pages/auth.html';
+                }, 1000);
+            } else {
+                window.location.href = '/pages/auth.html';
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            window.location.href = '/pages/auth.html';
+        }
     }
 }
 
