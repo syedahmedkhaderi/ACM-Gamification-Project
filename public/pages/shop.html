@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Shop</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-badge"><span>SQ</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+        </div>
+        <button id="navToggle" class="nav-toggle">☰</button>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/pages/assignments.html" class="nav-link">Assignments</a>
+            <a href="/pages/exams.html" class="nav-link">Exams</a>
+            <a href="/pages/study.html" class="nav-link">Study</a>
+            <a href="/pages/grades.html" class="nav-link">Grades</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
+            <a href="/pages/shop.html" class="nav-link active">Shop</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section active">
+            <div class="section-header">
+                <h2>🛍️ Reward Shop</h2>
+                <div class="coin-display">
+                    <span class="coin-icon">💰</span>
+                    <span id="shopCoins">0</span> Coins
+                </div>
+            </div>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <div class="item-icon">🎨</div>
+                    <h4>Custom Avatar</h4>
+                    <p>Personalize your profile</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('avatar', 100)">100 Coins</button>
+                </div>
+                <div class="shop-item">
+                    <div class="item-icon">⚡</div>
+                    <h4>XP Booster</h4>
+                    <p>2x XP for 1 hour</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('xp-boost', 150)">150 Coins</button>
+                </div>
+                <div class="shop-item">
+                    <div class="item-icon">🛡️</div>
+                    <h4>Streak Shield</h4>
+                    <p>Protect your streak</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('streak-shield', 200)">200 Coins</button>
+                </div>
+                <div class="shop-item">
+                    <div class="item-icon">🎭</div>
+                    <h4>Custom Title</h4>
+                    <p>Change your title</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('title', 250)">250 Coins</button>
+                </div>
+                <div class="shop-item">
+                    <div class="item-icon">🌟</div>
+                    <h4>Quest Refresher</h4>
+                    <p>Get new quests</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('quest-refresh', 75)">75 Coins</button>
+                </div>
+                <div class="shop-item">
+                    <div class="item-icon">💎</div>
+                    <h4>Premium Theme</h4>
+                    <p>Exclusive UI theme</p>
+                    <button class="btn btn-primary" onclick="purchaseItem('theme', 500)">500 Coins</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
+            <span>Made with ❤️ for learning.</span>
+        </div>
+    </footer>
+</body>
+</html>
+
+

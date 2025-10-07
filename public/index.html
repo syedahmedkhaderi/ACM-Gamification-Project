@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Gamified Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-badge"><span>SQ</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+        </div>
+        <button id="navToggle" class="nav-toggle">☰</button>
+        <div class="nav-links">
+            <a href="/" class="nav-link active">Dashboard</a>
+            <a href="/pages/assignments.html" class="nav-link">Assignments</a>
+            <a href="/pages/exams.html" class="nav-link">Exams</a>
+            <a href="/pages/study.html" class="nav-link">Study</a>
+            <a href="/pages/grades.html" class="nav-link">Grades</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
+            <a href="/pages/shop.html" class="nav-link">Shop</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="dashboard" class="section active">
+            <div class="user-header">
+                <div class="user-avatar">
+                    <div class="avatar-circle">
+                        <span id="userAvatar">🎓</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <h1 id="userName" contenteditable="true" class="editable-name">Loading...</h1>
+                    <p class="user-title" id="userTitle">Scholar</p>
+                    <div class="user-stats">
+                        <div class="stat">
+                            <span class="stat-label">Level</span>
+                            <span class="stat-value" id="userLevel">1</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Coins</span>
+                            <span class="stat-value" id="userCoins">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Streak</span>
+                            <span class="stat-value" id="userStreak">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="xp-container">
+                <div class="xp-bar-wrapper">
+                    <div class="xp-bar" id="xpBar"></div>
+                </div>
+                <div class="xp-text">
+                    <span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card stats-card">
+                    <h3>📊 Quick Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="statCompleted">0</div>
+                            <div class="stat-label">Completed Tasks</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statPending">0</div>
+                            <div class="stat-label">Pending Tasks</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statGPA">0.0</div>
+                            <div class="stat-label">GPA</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statStudyHours">0</div>
+                            <div class="stat-label">Study Hours</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Active Quests</h3>
+                    <div id="activeQuestsList" class="quests-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📅 Upcoming Deadlines</h3>
+                    <div id="upcomingDeadlines" class="deadlines-list"></div>
+                </div>
+
+            </div>
+
+            <div class="card activity-feed">
+                <h3>📰 Activity Feed</h3>
+                <div id="activityFeed" class="activity-list"></div>
+            </div>
+        </section>
+
+        
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
+            <span>Made with ❤️ for learning.</span>
+        </div>
+    </footer>
+</body>
+</html>

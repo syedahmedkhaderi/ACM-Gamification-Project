@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Exams</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-badge"><span>SQ</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+        </div>
+        <button id="navToggle" class="nav-toggle">☰</button>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/pages/assignments.html" class="nav-link">Assignments</a>
+            <a href="/pages/exams.html" class="nav-link active">Exams</a>
+            <a href="/pages/study.html" class="nav-link">Study</a>
+            <a href="/pages/grades.html" class="nav-link">Grades</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
+            <a href="/pages/shop.html" class="nav-link">Shop</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section active">
+            <div class="section-header">
+                <h2>🎓 Tests & Exams</h2>
+                <button class="btn btn-primary" onclick="showAddExamModal()">+ New Exam</button>
+            </div>
+            <div id="examsList" class="exams-grid"></div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
+            <span>Made with ❤️ for learning.</span>
+        </div>
+    </footer>
+</body>
+</html>
+
+

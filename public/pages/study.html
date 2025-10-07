@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Study Sessions</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-badge"><span>SQ</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+        </div>
+        <button id="navToggle" class="nav-toggle">☰</button>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/pages/assignments.html" class="nav-link">Assignments</a>
+            <a href="/pages/exams.html" class="nav-link">Exams</a>
+            <a href="/pages/study.html" class="nav-link active">Study</a>
+            <a href="/pages/grades.html" class="nav-link">Grades</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
+            <a href="/pages/shop.html" class="nav-link">Shop</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section active">
+            <div class="section-header">
+                <h2>📖 Study Sessions</h2>
+            </div>
+            <div class="study-container">
+                <div class="card study-timer-card">
+                    <h3>⏱️ Pomodoro Timer</h3>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="timer-controls">
+                        <button class="btn btn-primary" onclick="startTimer()">Start</button>
+                        <button class="btn btn-secondary" onclick="pauseTimer()">Pause</button>
+                        <button class="btn btn-secondary" onclick="resetTimer()">Reset</button>
+                    </div>
+                    <div class="study-form">
+                        <input type="text" id="studySubject" placeholder="Subject" class="input">
+                        <button class="btn btn-success" onclick="completeStudySession()">Complete Session</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📊 Recent Sessions</h3>
+                    <div id="studySessionsList" class="sessions-list"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
+            <span>Made with ❤️ for learning.</span>
+        </div>
+    </footer>
+</body>
+</html>
+
+
