@@ -38,8 +38,25 @@ const sessionConfig = {
   }
 };
 
+// Configure persistent session store when MONGODB_URI is provided
+const mongoUriForSessions = process.env.MONGODB_URI;
+if (mongoUriForSessions) {
+  try {
+    sessionConfig.store = MongoStore.create({
+      mongoUrl: mongoUriForSessions,
+      collectionName: 'sessions',
+      ttl: 60 * 60 * 24 * 7,
+      autoRemove: 'native'
+    });
+    console.log('✅ Using MongoDB session store');
+  } catch (e) {
+    console.log('⚠️  Failed to configure MongoDB session store, falling back to memory:', e.message);
+  }
+} else {
+  console.log('⚠️  No MONGODB_URI set; using in-memory session store');
+}
+
 app.use(session(sessionConfig));
-console.log('✅ Using in-memory session store');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);

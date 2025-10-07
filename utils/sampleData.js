@@ -9,9 +9,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   // Sample Assignments (6)
   const assignments = [
     {
-      title: 'Math Homework Chapter 5',
-      subject: 'Mathematics',
-      description: 'Complete exercises 1-20 on quadratic equations',
+      title: 'Limits WS 1',
+      subject: 'MATH1030',
+      description: 'Complete exercises 1-20 on Limits',
       dueDate: new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
       priority: 'high',
       status: 'pending',
@@ -20,9 +20,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'History Essay: WWII',
-      subject: 'History',
-      description: 'Write a 1500-word essay on the causes of World War II',
+      title: 'Persuasive Paragraph',
+      subject: 'COM1010',
+      description: 'Write a 1500-word paragraph on the causes of World War II',
       dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 1 week
       priority: 'medium',
       status: 'completed',
@@ -31,8 +31,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Physics Lab Report',
-      subject: 'Physics',
+      title: 'Lab Report -5',
+      subject: 'PHYS1021',
       description: 'Analyze the pendulum experiment data',
       dueDate: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days
       priority: 'urgent',
@@ -42,9 +42,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'English Literature Review',
-      subject: 'English',
-      description: 'Read and review "Pride and Prejudice" chapters 1-5',
+      title: 'Python Loops WS',
+      subject: 'INFS1101',
+      description: 'Complete exercises 1-20 on Python Loops',
       dueDate: new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days
       priority: 'low',
       status: 'completed',
@@ -53,9 +53,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Chemistry Problem Set',
-      subject: 'Chemistry',
-      description: 'Solve stoichiometry problems 1-15',
+      title: 'Note-Taking Exercise',
+      subject: 'EFFL1003',
+      description: 'Take notes on the lecture',
       dueDate: new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000), // 6 days
       priority: 'medium',
       status: 'pending',
@@ -64,9 +64,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Computer Science Project',
-      subject: 'Computer Science',
-      description: 'Build a simple calculator using JavaScript',
+      title: 'DSA Leetcode #54',
+      subject: 'INFS3201',
+      description: 'Solve Leetcode problem 54',
       dueDate: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000), // 10 days
       priority: 'high',
       status: 'pending',
@@ -80,7 +80,7 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   const exams = [
     {
       title: 'Mathematics Midterm',
-      subject: 'Mathematics',
+      subject: 'MATH1030',
       type: 'exam',
       date: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000), // 2 weeks
       difficulty: 'hard',
@@ -90,8 +90,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'History Quiz',
-      subject: 'History',
+      title: 'Communication Quiz',
+      subject: 'COM1010',
       type: 'quiz',
       date: new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000), // 4 days
       difficulty: 'easy',
@@ -102,7 +102,7 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
     },
     {
       title: 'Physics Final Exam',
-      subject: 'Physics',
+      subject: 'PHYS1021',
       type: 'exam',
       date: new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000), // 3 weeks
       difficulty: 'hard',
@@ -112,8 +112,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'English Literature Test',
-      subject: 'English',
+      title: 'Python Test',
+      subject: 'INFS1101',
       type: 'test',
       date: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000), // 8 days
       difficulty: 'medium',
@@ -123,8 +123,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Chemistry Pop Quiz',
-      subject: 'Chemistry',
+      title: 'Note-Taking Quiz',
+      subject: 'EFFL1003',
       type: 'quiz',
       date: new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
       difficulty: 'medium',
@@ -138,8 +138,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   // Sample Grades (5)
   const grades = [
     {
-      examTitle: 'Mathematics Quiz 1',
-      subject: 'Mathematics',
+      examTitle: 'MATH1030 Final Exam',
+      subject: 'MATH1030',
       score: 95,
       maxScore: 100,
       gradePoints: 4.0,
@@ -148,8 +148,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'History Essay 1',
-      subject: 'History',
+      examTitle: 'COM1010 Final Exam',
+      subject: 'COM1010',
       score: 87,
       maxScore: 100,
       gradePoints: 3.7,
@@ -158,8 +158,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'Physics Lab 1',
-      subject: 'Physics',
+      examTitle: 'PHYS1021 Final Exam',
+      subject: 'PHYS1021',
       score: 92,
       maxScore: 100,
       gradePoints: 3.9,
@@ -168,8 +168,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'English Literature Quiz',
-      subject: 'English',
+      examTitle: 'INFS1101 Final Exam',
+      subject: 'INFS1101',
       score: 88,
       maxScore: 100,
       gradePoints: 3.8,
@@ -178,8 +178,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'Chemistry Test 1',
-      subject: 'Chemistry',
+      examTitle: 'EFFL1003 Quiz',
+      subject: 'EFFL1003',
       score: 90,
       maxScore: 100,
       gradePoints: 3.8,

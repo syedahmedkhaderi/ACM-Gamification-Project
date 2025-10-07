@@ -15,9 +15,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   // Sample Assignments (6)
   const assignments = [
     {
-      title: 'Math Homework Chapter 5',
-      subject: 'Mathematics',
-      description: 'Complete exercises 1-20 on quadratic equations',
+      title: 'Limits WS 1',
+      subject: 'MATH1030',
+      description: 'Complete exercises 1-20 on Limits',
       dueDate: new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
       priority: 'high',
       status: 'pending',
@@ -26,9 +26,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'History Essay: WWII',
-      subject: 'History',
-      description: 'Write a 1500-word essay on the causes of World War II',
+      title: 'Persuasive Paragraph',
+      subject: 'COM1010',
+      description: 'Write a 1500-word paragraph on the causes of World War II',
       dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 1 week
       priority: 'medium',
       status: 'completed',
@@ -37,8 +37,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Physics Lab Report',
-      subject: 'Physics',
+      title: 'Lab Report -5',
+      subject: 'PHYS1021',
       description: 'Analyze the pendulum experiment data',
       dueDate: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days
       priority: 'urgent',
@@ -48,9 +48,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'English Literature Review',
-      subject: 'English',
-      description: 'Read and review "Pride and Prejudice" chapters 1-5',
+      title: 'Python Loops WS',
+      subject: 'INFS1101',
+      description: 'Complete exercises 1-20 on Python Loops',
       dueDate: new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days
       priority: 'low',
       status: 'completed',
@@ -59,25 +59,14 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Chemistry Problem Set',
-      subject: 'Chemistry',
-      description: 'Solve stoichiometry problems 1-15',
+      title: 'Note-Taking Exercise',
+      subject: 'EFFL1003',
+      description: 'Take notes on the lecture',
       dueDate: new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000), // 6 days
       priority: 'medium',
       status: 'pending',
       xpReward: 55,
       coinReward: 11,
-      userId
-    },
-    {
-      title: 'Computer Science Project',
-      subject: 'Computer Science',
-      description: 'Build a simple calculator using JavaScript',
-      dueDate: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000), // 10 days
-      priority: 'high',
-      status: 'pending',
-      xpReward: 100,
-      coinReward: 20,
       userId
     }
   ];
@@ -85,8 +74,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   // Sample Exams (5)
   const exams = [
     {
-      title: 'Mathematics Midterm',
-      subject: 'Mathematics',
+      title: 'MATH1030 Midterm',
+      subject: 'MATH1030',
       type: 'exam',
       date: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000), // 2 weeks
       difficulty: 'hard',
@@ -96,8 +85,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'History Quiz',
-      subject: 'History',
+      title: 'COM1010 Quiz',
+      subject: 'COM1010',
       type: 'quiz',
       date: new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000), // 4 days
       difficulty: 'easy',
@@ -107,8 +96,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Physics Final Exam',
-      subject: 'Physics',
+      title: 'PHYS1021 Final Exam',
+      subject: 'PHYS1021',
       type: 'exam',
       date: new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000), // 3 weeks
       difficulty: 'hard',
@@ -118,8 +107,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'English Literature Test',
-      subject: 'English',
+      title: 'INFS1101 Test',
+      subject: 'INFS1101',
       type: 'test',
       date: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000), // 8 days
       difficulty: 'medium',
@@ -129,8 +118,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      title: 'Chemistry Pop Quiz',
-      subject: 'Chemistry',
+      title: 'EFFL1003 Quiz',
+      subject: 'EFFL1003',
       type: 'quiz',
       date: new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
       difficulty: 'medium',
@@ -144,9 +133,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   // Sample Grades (5)
   const grades = [
     {
-      examTitle: 'Mathematics Quiz 1',
-      subject: 'Mathematics',
-      score: 95,
+      examTitle: 'MATH1030 Final Exam',
+      subject: 'MATH1030',
+      score: 100,
       maxScore: 100,
       gradePoints: 4.0,
       date: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
@@ -154,8 +143,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'History Essay 1',
-      subject: 'History',
+      examTitle: 'COM1010 Final Exam',
+      subject: 'COM1010',
       score: 87,
       maxScore: 100,
       gradePoints: 3.7,
@@ -164,8 +153,8 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'Physics Lab 1',
-      subject: 'Physics',
+      examTitle: 'PHYS1021 Final Exam',
+      subject: 'PHYS1021',
       score: 92,
       maxScore: 100,
       gradePoints: 3.9,
@@ -174,9 +163,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'English Literature Quiz',
-      subject: 'English',
-      score: 88,
+      examTitle: 'INFS1101 Final Exam',
+      subject: 'INFS1101',
+      score: 100,
       maxScore: 100,
       gradePoints: 3.8,
       date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
@@ -184,9 +173,9 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
       userId
     },
     {
-      examTitle: 'Chemistry Test 1',
-      subject: 'Chemistry',
-      score: 90,
+      examTitle: 'EFFL1003 Quiz',
+      subject: 'EFFL1003',
+      score: 59,
       maxScore: 100,
       gradePoints: 3.8,
       date: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // yesterday
@@ -213,8 +202,8 @@ const createSampleEvents = async (adminId) => {
   
   const events = [
     {
-      title: 'Science Fair Registration',
-      description: 'Register for the annual science fair competition',
+      title: 'ACM Hackathon',
+      description: 'Register for the ACM Hackathon through Outlook',
       date: new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000), // 15 days
       location: 'Main Auditorium',
       type: 'competition',
@@ -222,16 +211,16 @@ const createSampleEvents = async (adminId) => {
       createdBy: adminId
     },
     {
-      title: 'Study Skills Workshop',
-      description: 'Learn effective study techniques and time management',
+      title: 'ACM Tech Talk',
+      description: 'Learn about new web development frameworks from ACM Proffesionals!',
       date: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days
-      location: 'Library Conference Room',
-      type: 'workshop',
+      location: 'Main Auditorium',
+      type: 'seminar',
       icon: '📚',
       createdBy: adminId
     },
     {
-      title: 'Career Guidance Seminar',
+      title: 'ACM Career Guidance Seminar',
       description: 'Explore different career paths and opportunities',
       date: new Date(now.getTime() + 20 * 24 * 60 * 60 * 1000), // 20 days
       location: 'Gymnasium',
@@ -240,8 +229,8 @@ const createSampleEvents = async (adminId) => {
       createdBy: adminId
     },
     {
-      title: 'Final Exam Period',
-      description: 'Final examinations for all courses',
+      title: 'ACM Project Proposal Meeting',
+      description: 'ACM Project Proposal Meeting - all welcome!',
       date: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // 30 days
       location: 'Various Classrooms',
       type: 'deadline',
@@ -249,8 +238,8 @@ const createSampleEvents = async (adminId) => {
       createdBy: adminId
     },
     {
-      title: 'Student Council Meeting',
-      description: 'Monthly student council meeting - all welcome',
+      title: 'ACM StudentBoard Meeting',
+      description: 'Monthly ACM StudentBoard meeting - all welcome!',
       date: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days
       location: 'Room 201',
       type: 'other',
@@ -319,22 +308,22 @@ const initializeData = async () => {
 
       const quests = [
         {
-          title: 'First Steps',
-          description: 'Complete your first 2 assignments',
+          title: '30,000 Steps!',
+          description: 'Reach 30,000 steps in one day',
           type: 'daily',
           target: 2,
           badgeReward: {
-            id: 'badge_first_steps',
-            name: 'First Steps',
+            id: 'badge_reach_30000_steps',
+            name: 'Reach 30,000 Steps',
             icon: '🎯',
-            description: 'Completed your first assignments'
+            description: 'Reached 30,000 steps in one day'
           },
           expiresAt: endOfDay,
           isActive: true
         },
         {
           title: 'Study Master',
-          description: 'Study for 5 hours this week',
+          description: 'Study for 25 hours this week',
           type: 'weekly',
           target: 300,
           badgeReward: {
@@ -360,29 +349,29 @@ const initializeData = async () => {
           isActive: true
         },
         {
-          title: 'Exam Ace',
-          description: 'Complete 5 exams with high scores',
+          title: 'ACM Scholar',
+          description: 'Contribute to 5 ACM projects',
           type: 'weekly',
           target: 5,
           badgeReward: {
-            id: 'badge_exam_ace',
-            name: 'Exam Ace',
+            id: 'badge_acm_scholar',
+            name: 'ACM Scholar',
             icon: '🎓',
-            description: 'Mastered multiple exams'
+            description: 'Contributed to 5 ACM projects'
           },
           expiresAt: endOfWeek,
           isActive: true
         },
         {
-          title: 'Grade Champion',
-          description: 'Maintain above 3.5 GPA',
+          title: 'Hackathon Winner',
+          description: 'Win a hackathon Conducted by ACM',
           type: 'special',
           target: 1,
           badgeReward: {
-            id: 'badge_grade_champion',
-            name: 'Grade Champion',
+            id: 'badge_hackathon_winner',
+            name: 'Hackathon Winner',
             icon: '⭐',
-            description: 'Consistent academic excellence'
+            description: 'Won a hackathon Conducted by ACM'
           },
           expiresAt: endOfMonth,
           isActive: true
@@ -430,29 +419,29 @@ const initializeData = async () => {
           isActive: true
         },
         {
-          title: 'Team Player',
-          description: 'Participate in 2 group projects',
+          title: 'ACM Contributor',
+          description: 'Participate in 5+ group projects',
           type: 'weekly',
           target: 2,
           badgeReward: {
-            id: 'badge_team_player',
-            name: 'Team Player',
+            id: 'badge_acm_contributor',
+            name: 'ACM Contributor',
             icon: '🤝',
-            description: 'Collaboration champion'
+            description: 'Participated in 5+ group projects'
           },
           expiresAt: endOfWeek,
           isActive: true
         },
         {
-          title: 'Knowledge Seeker',
-          description: 'Study 10 hours this week',
+          title: 'Portfolioist',
+          description: 'Build a portfolio website',
           type: 'weekly',
           target: 600,
           badgeReward: {
-            id: 'badge_knowledge_seeker',
-            name: 'Knowledge Seeker',
+            id: 'badge_built_a_portfolio_website',
+            name: 'Built a Portfolio Website',
             icon: '📖',
-            description: 'Dedicated to learning'
+            description: 'Built a portfolio website'
           },
           expiresAt: endOfWeek,
           isActive: true
@@ -476,12 +465,12 @@ const initializeData = async () => {
           isAvailable: true
         },
         {
-          name: 'Dark Mode Theme',
-          description: 'Unlock dark purple theme',
+          name: 'Light Mode Theme',
+          description: 'Unlock Light Mode theme',
           price: 250,
           icon: '🎨',
           type: 'theme',
-          effect: 'theme_dark_purple',
+          effect: 'theme_light_mode',
           isAvailable: true
         },
         {
