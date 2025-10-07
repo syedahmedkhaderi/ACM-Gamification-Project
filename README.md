@@ -294,27 +294,11 @@ A comprehensive web application that gamifies the academic experience for studen
 
 This project is licensed under the ISC License. See the package.json file for details.
 
-## 🏆 Credits
-
-- **Association for Computing Machinery (ACM)**: Project sponsor and requirements
-- **Development Team**: Full-stack development and gamification design
-- **MongoDB**: Database and session storage
-- **Express.js**: Web framework
-- **Node.js**: Runtime environment
-
-## 📞 Support
-
-For technical support or questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation for common solutions
-
 ## 🔮 Future Enhancements
 
 ### Planned Features
 - **Mobile App**: React Native or Flutter mobile application
 - **Advanced Analytics**: Detailed progress tracking and insights
-- **Social Features**: Study groups and peer collaboration
 - **AI Integration**: Personalized study recommendations
 - **Advanced Gamification**: More quest types and achievement systems
 
@@ -322,7 +306,6 @@ For technical support or questions:
 - **API Versioning**: Versioned API endpoints
 - **Caching**: Redis integration for improved performance
 - **Testing**: Comprehensive test suite with Jest
-- **CI/CD**: Automated deployment pipeline
 - **Monitoring**: Application performance monitoring
 
 ---
