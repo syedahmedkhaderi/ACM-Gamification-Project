@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Login</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo-badge"><span>SQ</span></div>
+                <h1>Student Quest</h1>
+                <p>Level up your learning journey</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+            </div>
+
+            <div id="loginForm" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <input type="email" id="loginEmail" class="input" placeholder="Email" required>
+                <input type="password" id="loginPassword" class="input" placeholder="Password" required>
+                <div id="loginError" class="error-message"></div>
+                <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+            </div>
+
+            <div id="registerForm" class="auth-form">
+                <h2>Create Account</h2>
+                <input type="text" id="registerName" class="input" placeholder="Full Name" required>
+                <input type="email" id="registerEmail" class="input" placeholder="Email" required>
+                <input type="password" id="registerPassword" class="input" placeholder="Password" required>
+                <input type="password" id="registerConfirmPassword" class="input" placeholder="Confirm Password" required>
+                <div id="registerError" class="error-message"></div>
+                <button class="btn btn-primary" onclick="handleRegister()">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

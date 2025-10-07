@@ -11,10 +11,18 @@ const examsRoutes = require('./routes/exams');
 const questsRoutes = require('./routes/quests');
 const studySessionsRoutes = require('./routes/studySessions');
 const gradesRoutes = require('./routes/grades');
+const shopRoutes = require('./routes/shop');
+const eventsRoutes = require('./routes/events');
 
 const app = express();
 
-connectDB();
+connectDB().then(connected => {
+  if (connected) {
+    console.log('🎉 App running with MongoDB database');
+  } else {
+    console.log('⚠️  App running without database - please configure MongoDB');
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,13 +38,8 @@ const sessionConfig = {
   }
 };
 
-if (process.env.MONGODB_URI) {
-  sessionConfig.store = MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI
-  });
-}
-
 app.use(session(sessionConfig));
+console.log('✅ Using in-memory session store');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
@@ -45,6 +48,8 @@ app.use('/api/exams', examsRoutes);
 app.use('/api/quests', questsRoutes);
 app.use('/api/study-sessions', studySessionsRoutes);
 app.use('/api/grades', gradesRoutes);
+app.use('/api/shop', shopRoutes);
+app.use('/api/events', eventsRoutes);
 
 module.exports = app;
 

@@ -120,6 +120,7 @@ function setupEventListeners() {
 // SPA navigation removed. Each page loads only the content it contains.
 
 async function initializeApp() {
+    await checkAuth();
     await loadUser();
     // Conditionally load modules based on elements present on the page
     if (document.getElementById('dashboard')) {
@@ -143,6 +144,19 @@ async function initializeApp() {
     if (document.getElementById('shopCoins')) {
         updateShopCoins();
     }
+    if (document.getElementById('eventsList')) {
+        await loadEvents();
+    }
+    if (document.getElementById('profileName')) {
+        await loadProfile();
+    }
+    if (document.getElementById('leaderboardList')) {
+        await loadLeaderboard();
+    }
+    if (document.getElementById('upcomingEvents')) {
+        await loadUpcomingEventsWidget();
+    }
+    updateNavAvatar();
 }
 
 async function loadUser() {
@@ -182,6 +196,15 @@ function updateUserDisplay() {
     if (xpBar) {
         xpBar.style.width = `${(currentXP / nextLevelXP) * 100}%`;
     }
+
+    const userAvatar = userData.avatar || '🎓';
+    const avatarEl = document.getElementById('userAvatar');
+    if (avatarEl) avatarEl.textContent = userAvatar;
+    const profileAvatar = document.getElementById('profileAvatar');
+    if (profileAvatar) profileAvatar.textContent = userAvatar;
+
+    updateNavAvatar();
+    updateShopButtons();
 }
 
 async function updateUserName() {
@@ -208,6 +231,12 @@ async function loadDashboard() {
     await loadActiveQuests();
     await loadUpcomingDeadlines();
     await loadActivityFeed();
+    if (document.getElementById('leaderboardList')) {
+        await loadLeaderboard();
+    }
+    if (document.getElementById('upcomingEvents')) {
+        await loadUpcomingEventsWidget();
+    }
 }
 
 async function loadStats() {
@@ -909,5 +938,480 @@ window.onclick = function(event) {
     const modal = document.getElementById('modal');
     if (event.target === modal) {
         closeModal();
+    }
+}
+
+async function checkAuth() {
+    const currentPage = window.location.pathname;
+    if (currentPage.includes('auth.html')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/user`);
+        if (!response.ok) {
+            window.location.href = '/pages/auth.html';
+        }
+    } catch (error) {
+        console.error('Auth check error:', error);
+    }
+}
+
+function switchAuthTab(tab) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginTab = document.querySelector('.auth-tab:first-child');
+    const registerTab = document.querySelector('.auth-tab:last-child');
+    
+    if (tab === 'login') {
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+    } else {
+        registerForm.classList.add('active');
+        loginForm.classList.remove('active');
+        registerTab.classList.add('active');
+        loginTab.classList.remove('active');
+    }
+}
+
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const errorEl = document.getElementById('loginError');
+    
+    if (!email || !password) {
+        errorEl.textContent = 'Please fill in all fields';
+        return;
+    }
+    
+    errorEl.textContent = 'Login functionality coming soon...';
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 1000);
+}
+
+async function handleRegister() {
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+    const errorEl = document.getElementById('registerError');
+    
+    if (!name || !email || !password || !confirmPassword) {
+        errorEl.textContent = 'Please fill in all fields';
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        errorEl.textContent = 'Passwords do not match';
+        return;
+    }
+    
+    errorEl.textContent = 'Registration functionality coming soon...';
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 1000);
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = '/pages/auth.html';
+    }
+}
+
+async function loadProfile() {
+    await loadUser();
+    if (!userData) return;
+    
+    document.getElementById('profileName').value = userData.name || '';
+    document.getElementById('profileTitle').value = userData.title || '';
+    document.getElementById('profileEmail').value = userData.email || '';
+    document.getElementById('profileLevel').textContent = userData.level || 1;
+    document.getElementById('profileXP').textContent = userData.xp || 0;
+    document.getElementById('profileCoins').textContent = userData.coins || 0;
+    document.getElementById('profileGPA').textContent = userData.gpa || '0.0';
+    document.getElementById('profileStudyHours').textContent = Math.floor((userData.totalStudyMinutes || 0) / 60);
+    document.getElementById('profileStreak').textContent = userData.streak || 0;
+    
+    const badges = userData.badges || [];
+    const badgesGrid = document.getElementById('badgesGrid');
+    if (badges.length === 0) {
+        badgesGrid.innerHTML = '<p style="color: var(--text-muted);">No badges earned yet. Complete quests to earn badges!</p>';
+    } else {
+        badgesGrid.innerHTML = badges.map(badge => `
+            <div class="badge-item">
+                <div class="badge-icon">${badge.icon}</div>
+                <div class="badge-name">${badge.name}</div>
+            </div>
+        `).join('');
+    }
+    
+    const inventory = userData.inventory || [];
+    const inventoryGrid = document.getElementById('inventoryGrid');
+    if (inventory.length === 0) {
+        inventoryGrid.innerHTML = '<p style="color: var(--text-muted);">Your inventory is empty. Visit the shop to purchase items!</p>';
+    } else {
+        inventoryGrid.innerHTML = inventory.map(item => `
+            <div class="inventory-item">
+                <div class="inventory-item-icon">${item.icon}</div>
+                <h4>${item.name}</h4>
+                <button class="btn btn-secondary" onclick="useItem('${item.id}')">Use</button>
+            </div>
+        `).join('');
+    }
+}
+
+async function updateProfile() {
+    const name = document.getElementById('profileName').value;
+    const title = document.getElementById('profileTitle').value;
+    const email = document.getElementById('profileEmail').value;
+    
+    try {
+        const response = await fetch(`${API_URL}/user`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, title, email })
+        });
+        userData = await response.json();
+        updateUserDisplay();
+        showNotification('✅ Profile updated successfully!');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showNotification('❌ Failed to update profile');
+    }
+}
+
+function showAvatarPicker() {
+    const modalBody = document.getElementById('modalBody');
+    const emojis = ['😀', '😎', '🤓', '🧑‍🎓', '👨‍🎓', '👩‍🎓', '🎓', '📚', '✏️', '🖊️', '📖', '🎯', '🏆', '⭐', '🌟', '💎', '🔥', '⚡', '🚀', '🎨', '🎭', '🎪', '🎬', '🎮', '🎲', '🧩', '🧠', '💡', '🔬', '🔭', '🎸', '🎹', '🎺', '🎻', '🥁', '🎤', '🎧', '🎼'];
+    
+    modalBody.innerHTML = `
+        <h2>Choose Your Avatar</h2>
+        <div class="emoji-picker">
+            <div class="emoji-grid">
+                ${emojis.map(emoji => `
+                    <div class="emoji-option" onclick="selectAvatar('${emoji}')">${emoji}</div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="avatar-upload-section">
+            <h3>Or Upload Image</h3>
+            <input type="file" id="avatarUpload" class="input" accept="image/*">
+            <button class="btn btn-primary" onclick="uploadAvatar()">Upload</button>
+        </div>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+async function selectAvatar(emoji) {
+    try {
+        const response = await fetch(`${API_URL}/user`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ avatar: emoji })
+        });
+        userData = await response.json();
+        updateUserDisplay();
+        closeModal();
+        showNotification('✅ Avatar updated!');
+    } catch (error) {
+        console.error('Error updating avatar:', error);
+        showNotification('❌ Failed to update avatar');
+    }
+}
+
+async function uploadAvatar() {
+    const fileInput = document.getElementById('avatarUpload');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showNotification('❌ Please select an image');
+        return;
+    }
+    
+    showNotification('Image upload feature coming soon...');
+}
+
+function useItem(itemId) {
+    showNotification('Item used! Effect applied.');
+}
+
+async function loadEvents() {
+    try {
+        const response = await fetch(`${API_URL}/events`);
+        const events = await response.json();
+        
+        if (userData && userData.role === 'admin') {
+            document.getElementById('addEventBtn').style.display = 'block';
+        }
+        
+        const container = document.getElementById('eventsList');
+        if (events.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">No upcoming events.</p>';
+            return;
+        }
+        
+        container.innerHTML = events.map(event => {
+            const eventDate = new Date(event.date);
+            return `
+                <div class="event-card">
+                    <div class="event-date">${eventDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <div class="event-details">
+                        <div class="event-detail">📍 ${event.location}</div>
+                        <div class="event-detail"><span class="event-type-badge">${event.type}</span></div>
+                    </div>
+                    ${userData && userData.role === 'admin' ? `
+                        <button class="btn btn-danger" style="margin-top: 1rem;" onclick="deleteEvent('${event._id}')">Delete</button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading events:', error);
+    }
+}
+
+function showAddEventModal() {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <h2>Add New Event</h2>
+        <input type="text" id="newEventTitle" class="input" placeholder="Event Title" required>
+        <textarea id="newEventDescription" class="input" placeholder="Description" rows="3"></textarea>
+        <input type="date" id="newEventDate" class="input" required>
+        <input type="text" id="newEventLocation" class="input" placeholder="Location" required>
+        <select id="newEventType" class="input">
+            <option value="seminar">Seminar</option>
+            <option value="workshop">Workshop</option>
+            <option value="conference">Conference</option>
+            <option value="social">Social</option>
+            <option value="deadline">Deadline</option>
+        </select>
+        <button class="btn btn-primary" onclick="addEvent()">Create Event</button>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+async function addEvent() {
+    const title = document.getElementById('newEventTitle').value;
+    const description = document.getElementById('newEventDescription').value;
+    const date = document.getElementById('newEventDate').value;
+    const location = document.getElementById('newEventLocation').value;
+    const type = document.getElementById('newEventType').value;
+    
+    if (!title || !date || !location) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    try {
+        await fetch(`${API_URL}/events`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description, date, location, type })
+        });
+        closeModal();
+        showNotification('✅ Event created!');
+        loadEvents();
+    } catch (error) {
+        console.error('Error adding event:', error);
+    }
+}
+
+async function deleteEvent(id) {
+    const ok = await confirmDialog('Are you sure you want to delete this event?');
+    if (!ok) return;
+    
+    try {
+        await fetch(`${API_URL}/events/${id}`, { method: 'DELETE' });
+        showNotification('🗑️ Event deleted');
+        loadEvents();
+    } catch (error) {
+        console.error('Error deleting event:', error);
+    }
+}
+
+async function loadLeaderboard() {
+    try {
+        const response = await fetch(`${API_URL}/leaderboard`);
+        const leaderboard = await response.json();
+        
+        const container = document.getElementById('leaderboardList');
+        if (leaderboard.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">No leaderboard data yet.</p>';
+            return;
+        }
+        
+        container.innerHTML = leaderboard.slice(0, 10).map((user, index) => `
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank">#${index + 1}</div>
+                <div class="leaderboard-avatar">${user.avatar || '🎓'}</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">${user.name}</div>
+                    <div class="leaderboard-stats">GPA: ${user.gpa || '0.0'} | ${Math.floor((user.totalStudyMinutes || 0) / 60)}h study | ${(user.badges || []).length} badges</div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+    }
+}
+
+async function loadUpcomingEventsWidget() {
+    try {
+        const response = await fetch(`${API_URL}/events`);
+        const events = await response.json();
+        
+        const container = document.getElementById('upcomingEvents');
+        const upcomingEvents = events.slice(0, 3);
+        
+        if (upcomingEvents.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">No upcoming events</p>';
+            return;
+        }
+        
+        container.innerHTML = upcomingEvents.map(event => {
+            const eventDate = new Date(event.date);
+            const daysUntil = Math.ceil((eventDate - new Date()) / (1000 * 60 * 60 * 24));
+            
+            return `
+                <div style="padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 0.5rem; border: 1px solid var(--card-border);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${event.title}</strong>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                ${event.location}
+                            </p>
+                        </div>
+                        <span style="color: ${daysUntil <= 2 ? 'var(--danger)' : 'var(--accent-purple)'}; font-weight: 600;">
+                            ${daysUntil}d
+                        </span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading upcoming events:', error);
+    }
+}
+
+function showPurchaseConfirmation(itemId, itemName, cost, icon) {
+    if (!userData || userData.coins < cost) {
+        showNotification('❌ Not enough coins!');
+        return;
+    }
+    
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <h2>Confirm Purchase</h2>
+        <div style="text-align: center; margin: 2rem 0;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">${icon}</div>
+            <h3>${itemName}</h3>
+            <p style="color: var(--text-secondary);">Cost: ${cost} Coins</p>
+            <p style="color: var(--accent-purple); font-weight: 600;">Your balance: ${userData.coins} Coins</p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">Cancel</button>
+            <button class="btn btn-primary" onclick="confirmPurchase('${itemId}', '${itemName}', ${cost}, '${icon}')" style="flex: 1;">Purchase</button>
+        </div>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+async function confirmPurchase(itemId, itemName, cost, icon) {
+    try {
+        const newCoins = userData.coins - cost;
+        const response = await fetch(`${API_URL}/user`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ coins: newCoins, inventory: [...(userData.inventory || []), { id: itemId, name: itemName, icon }] })
+        });
+        userData = await response.json();
+        updateUserDisplay();
+        closeModal();
+        showNotification(`🎉 Purchased ${itemName}!`);
+        updateShopButtons();
+    } catch (error) {
+        console.error('Error purchasing item:', error);
+        showNotification('❌ Purchase failed');
+    }
+}
+
+function updateShopButtons() {
+    if (!userData) return;
+    const buttons = document.querySelectorAll('.shop-buy-btn');
+    buttons.forEach(btn => {
+        const item = btn.closest('.shop-item');
+        const price = parseInt(item.dataset.price);
+        if (userData.coins < price) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        }
+    });
+}
+
+function updateNavAvatar() {
+    if (!userData) return;
+    const navAvatars = document.querySelectorAll('#navUserAvatar');
+    const avatar = userData.avatar || '🎓';
+    navAvatars.forEach(el => {
+        if (el) el.textContent = avatar;
+    });
+}
+
+function showAddQuestModal() {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <h2>Add New Quest</h2>
+        <input type="text" id="newQuestTitle" class="input" placeholder="Quest Title" required>
+        <textarea id="newQuestDescription" class="input" placeholder="Description" rows="2"></textarea>
+        <select id="newQuestType" class="input">
+            <option value="daily">Daily Quest</option>
+            <option value="weekly">Weekly Quest</option>
+        </select>
+        <input type="number" id="newQuestTarget" class="input" placeholder="Target (e.g., 5)" required>
+        <input type="text" id="newQuestBadgeIcon" class="input" placeholder="Badge Icon (emoji)" required>
+        <input type="text" id="newQuestBadgeName" class="input" placeholder="Badge Name" required>
+        <button class="btn btn-primary" onclick="addQuest()">Create Quest</button>
+    `;
+    document.getElementById('modal').style.display = 'block';
+}
+
+async function addQuest() {
+    const title = document.getElementById('newQuestTitle').value;
+    const description = document.getElementById('newQuestDescription').value;
+    const type = document.getElementById('newQuestType').value;
+    const target = parseInt(document.getElementById('newQuestTarget').value);
+    const badgeIcon = document.getElementById('newQuestBadgeIcon').value;
+    const badgeName = document.getElementById('newQuestBadgeName').value;
+    
+    if (!title || !target || !badgeIcon || !badgeName) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    try {
+        await fetch(`${API_URL}/quests`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                title, 
+                description, 
+                type, 
+                target,
+                badge: { icon: badgeIcon, name: badgeName }
+            })
+        });
+        closeModal();
+        showNotification('✅ Quest created!');
+        loadQuests();
+    } catch (error) {
+        console.error('Error adding quest:', error);
     }
 }

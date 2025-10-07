@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Quest - Quests</title>
+    <title>Student Quest - Events</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="data:,">
 </head>
 <body>
     <div class="notification-container" id="notificationContainer"></div>
+    
     <nav class="navbar">
         <div class="nav-brand">
             <div class="logo-badge"><span>SQ</span></div>
@@ -21,9 +22,9 @@
             <a href="/pages/exams.html" class="nav-link">Exams</a>
             <a href="/pages/study.html" class="nav-link">Study</a>
             <a href="/pages/grades.html" class="nav-link">Grades</a>
-            <a href="/pages/quests.html" class="nav-link active">Quests</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
             <a href="/pages/shop.html" class="nav-link">Shop</a>
-            <a href="/pages/events.html" class="nav-link">Events</a>
+            <a href="/pages/events.html" class="nav-link active">Events</a>
             <a href="/pages/profile.html" class="nav-link">
                 <span id="navUserAvatar" class="nav-avatar">🎓</span>
                 Profile
@@ -35,10 +36,10 @@
     <main class="container">
         <section class="section active">
             <div class="section-header">
-                <h2>🎯 Daily & Weekly Quests</h2>
-                <button id="addQuestBtn" class="btn btn-primary" onclick="showAddQuestModal()" style="display: none;">+ New Quest</button>
+                <h2>📅 Campus Events</h2>
+                <button id="addEventBtn" class="btn btn-primary" onclick="showAddEventModal()" style="display: none;">+ New Event</button>
             </div>
-            <div id="questsList" class="quests-grid"></div>
+            <div id="eventsList" class="events-grid"></div>
         </section>
     </main>
 
@@ -58,5 +59,3 @@
     </footer>
 </body>
 </html>
-
-

@@ -5,18 +5,28 @@ const connectDB = async () => {
     let mongoURI = process.env.MONGODB_URI;
     
     if (!mongoURI) {
-      console.log('⚠️  No MONGODB_URI found, using local MongoDB');
-      mongoURI = 'mongodb://localhost:27017/questcraft';
-    } else {
-      mongoURI = mongoURI.trim();
+      console.log('⚠️  No MONGODB_URI found');
+      console.log('📝 Please add a valid MongoDB connection string to continue');
+      console.log('   You can get one from: https://www.mongodb.com/cloud/atlas');
+      return false;
+    }
+
+    mongoURI = mongoURI.trim().replace(/^\*\s*/, '');
+
+    if (!mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')) {
+      console.error('❌ Invalid MongoDB URI format');
+      console.log('📝 Please update MONGODB_URI with a valid connection string');
+      return false;
     }
 
     await mongoose.connect(mongoURI);
     console.log('✅ MongoDB connected successfully');
+    return true;
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
-    console.error('Please check your MONGODB_URI in Secrets');
-    process.exit(1);
+    console.log('📝 Please check your MONGODB_URI - it appears to be incomplete');
+    console.log('   Expected format: mongodb+srv://user:password@cluster.mongodb.net/dbname');
+    return false;
   }
 };
 

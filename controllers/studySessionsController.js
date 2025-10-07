@@ -1,44 +1,53 @@
-const store = require('../data/store');
+const StudySession = require('../models/StudySession');
+const User = require('../models/User');
+const Activity = require('../models/Activity');
 
-exports.list = (req, res) => {
-  const sorted = [...store.studySessions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
-  res.json(sorted);
+exports.list = async (req, res) => {
+  try {
+    const sessions = await StudySession.find({ userId: req.session.userId })
+      .sort({ date: -1 })
+      .limit(10);
+    res.json(sessions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-exports.create = (req, res) => {
-  const xpEarned = Math.floor(req.body.duration / 10);
-  const coinEarned = Math.floor(req.body.duration / 30);
+exports.create = async (req, res) => {
+  try {
+    const xpEarned = Math.floor(req.body.duration / 10);
+    const coinsEarned = Math.floor(req.body.duration / 30);
 
-  const session = {
-    _id: store.generateId(),
-    ...req.body,
-    xpEarned,
-    coinEarned,
-    focusScore: req.body.focusScore || 100,
-    date: new Date(),
-    userId: store.user._id,
-    createdAt: new Date()
-  };
+    const session = new StudySession({
+      ...req.body,
+      xpEarned,
+      coinsEarned,
+      focusScore: req.body.focusScore || 100,
+      date: new Date(),
+      userId: req.session.userId
+    });
 
-  store.studySessions.push(session);
+    await session.save();
 
-  store.addXP(xpEarned);
-  store.addCoins(coinEarned);
-  store.user.totalStudyMinutes += req.body.duration;
+    const user = await User.findById(req.session.userId);
+    user.xp += xpEarned;
+    user.coins += coinsEarned;
+    user.totalStudyMinutes += req.body.duration;
+    user.level = user.calculateLevel();
+    await user.save();
 
-  store.activities.push({
-    _id: store.generateId(),
-    type: 'study-session',
-    title: 'Study Session Complete!',
-    description: `Studied ${req.body.subject} for ${req.body.duration} minutes`,
-    icon: '📖',
-    xpGained: xpEarned,
-    coinsGained: coinEarned,
-    userId: store.user._id,
-    createdAt: new Date()
-  });
+    await Activity.create({
+      type: 'study-session',
+      title: 'Study Session Complete!',
+      description: `Studied ${req.body.subject} for ${req.body.duration} minutes`,
+      icon: '📖',
+      xpEarned: xpEarned,
+      coinsEarned: coinsEarned,
+      userId: req.session.userId
+    });
 
-  res.json({ session, user: store.user });
+    res.json({ session, user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
-
-

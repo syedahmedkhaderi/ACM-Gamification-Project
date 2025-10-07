@@ -1,68 +1,95 @@
-const store = require('../data/store');
+const Exam = require('../models/Exam');
+const User = require('../models/User');
+const Activity = require('../models/Activity');
 
-exports.list = (req, res) => {
-  const sorted = [...store.exams].sort((a, b) => new Date(a.date) - new Date(b.date));
-  res.json(sorted);
-};
-
-exports.create = (req, res) => {
-  const exam = {
-    _id: store.generateId(),
-    ...req.body,
-    status: 'upcoming',
-    xpReward: req.body.xpReward || 100,
-    userId: store.user._id,
-    createdAt: new Date()
-  };
-  store.exams.push(exam);
-  res.json(exam);
-};
-
-exports.update = (req, res) => {
-  const index = store.exams.findIndex(e => e._id === req.params.id);
-  if (index !== -1) {
-    store.exams[index] = { ...store.exams[index], ...req.body };
-    res.json(store.exams[index]);
-  } else {
-    res.status(404).json({ error: 'Exam not found' });
+exports.list = async (req, res) => {
+  try {
+    const exams = await Exam.find({ userId: req.session.userId })
+      .sort({ date: 1 });
+    res.json(exams);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.remove = (req, res) => {
-  const index = store.exams.findIndex(e => e._id === req.params.id);
-  if (index !== -1) {
-    store.exams.splice(index, 1);
+exports.create = async (req, res) => {
+  try {
+    const exam = new Exam({
+      ...req.body,
+      status: 'upcoming',
+      xpReward: req.body.xpReward || 100,
+      userId: req.session.userId
+    });
+    await exam.save();
+    res.json(exam);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.update = async (req, res) => {
+  try {
+    const exam = await Exam.findOneAndUpdate(
+      { _id: req.params.id, userId: req.session.userId },
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+    if (!exam) {
+      return res.status(404).json({ error: 'Exam not found' });
+    }
+    res.json(exam);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const exam = await Exam.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.session.userId
+    });
+    if (!exam) {
+      return res.status(404).json({ error: 'Exam not found' });
+    }
     res.json({ message: 'Exam deleted' });
-  } else {
-    res.status(404).json({ error: 'Exam not found' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.complete = (req, res) => {
-  const exam = store.exams.find(e => e._id === req.params.id);
-  if (!exam) {
-    return res.status(404).json({ error: 'Exam not found' });
+exports.complete = async (req, res) => {
+  try {
+    const exam = await Exam.findOne({
+      _id: req.params.id,
+      userId: req.session.userId
+    });
+    
+    if (!exam) {
+      return res.status(404).json({ error: 'Exam not found' });
+    }
+
+    exam.status = 'completed';
+    await exam.save();
+
+    const user = await User.findById(req.session.userId);
+    user.xp += exam.xpReward;
+    user.coins += 25;
+    user.level = user.calculateLevel();
+    await user.save();
+
+    await Activity.create({
+      type: 'exam-complete',
+      title: 'Exam Completed!',
+      description: `Completed "${exam.title}"`,
+      icon: '🎓',
+      xpEarned: exam.xpReward,
+      coinsEarned: 25,
+      userId: req.session.userId
+    });
+
+    res.json({ exam, user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  exam.status = 'completed';
-  exam.completedAt = new Date();
-
-  store.addXP(exam.xpReward);
-  store.addCoins(25);
-
-  store.activities.push({
-    _id: store.generateId(),
-    type: 'exam-complete',
-    title: 'Exam Completed!',
-    description: `Completed "${exam.title}"`,
-    icon: '🎓',
-    xpGained: exam.xpReward,
-    coinsGained: 25,
-    userId: store.user._id,
-    createdAt: new Date()
-  });
-
-  res.json({ exam, user: store.user });
 };
-
-

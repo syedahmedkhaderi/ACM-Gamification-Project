@@ -1,14 +1,12 @@
 const express = require('express');
-const controller = require('../controllers/questsController');
+const controller = require('../controllers/shopController');
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 const router = express.Router();
 
-router.get('/', isAuthenticated, controller.list);
+router.get('/', controller.list);
+router.post('/:itemId/purchase', isAuthenticated, controller.purchase);
 router.post('/', isAdmin, controller.create);
 router.put('/:id', isAdmin, controller.update);
 router.delete('/:id', isAdmin, controller.remove);
-router.post('/:id/progress', isAuthenticated, controller.progress);
 
 module.exports = router;
-
-

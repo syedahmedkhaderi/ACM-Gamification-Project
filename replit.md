@@ -1,58 +1,155 @@
-# QuestCraft - Gamified Learning Platform
+# QuestCraft - Gamified Learning Platform v2.0
 
 ## Overview
-QuestCraft is a gamified learning platform that transforms everyday study tasks into an engaging game. Students can complete assignments, schedule exams, log study sessions, record grades, and chase quests to earn XP, coins, achievements, and levels.
+QuestCraft is a gamified learning platform that transforms everyday study tasks into an engaging game. Students can complete assignments, schedule exams, log study sessions, record grades, and chase quests to earn XP, coins, and badges.
 
 ## Project Information
-- **Type**: Full-stack web application
+- **Type**: Full-stack web application with authentication
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Backend**: Node.js with Express
-- **Database**: In-memory storage (resets on server restart)
+- **Database**: MongoDB (Mongoose ODM)
+- **Authentication**: Session-based with bcrypt password hashing
+- **File Uploads**: Multer for avatar images
 - **Port**: 5000
 
 ## Recent Changes
-- **2025-10-07**: Initial Replit setup
-  - Configured server to run on port 5000 with host 0.0.0.0
-  - Added npm start script
-  - Added missing `/api/activities` endpoint
-  - Configured workflow for automatic server restart
+- **2025-10-07**: Major v2.0 Update
+  - ✅ Converted from in-memory to MongoDB database
+  - ✅ Implemented user authentication (register/login/logout)
+  - ✅ Created admin account system with protected routes
+  - ✅ Converted quests to badge-based rewards (admin-editable only)
+  - ✅ Built inventory system with purchase functionality
+  - ✅ Created events section (admin-managed)
+  - ✅ Added leaderboard (sorted by GPA → study hours → badges)
+  - ✅ Implemented profile picture selection (emoji/upload)
+  - ✅ Created user profile page
+  - ✅ Updated all pages with matching dark theme UI
 
 ## Project Architecture
 
 ### Backend Structure
-- **server.js** - Entry point that starts the Express server
-- **app.js** - Express app configuration with middleware and routes
-- **data/store.js** - In-memory data storage and helper functions
-- **controllers/** - Route handlers for CRUD operations
-- **routes/** - Express routers mounted under /api
+- **config/database.js** - MongoDB connection configuration
+- **models/** - Mongoose schemas (User, Assignment, Exam, Grade, StudySession, Quest, UserQuest, Activity, Event, ShopItem)
+- **middleware/** - Auth middleware (isAuthenticated, isAdmin) and file upload (multer)
+- **controllers/** - Route handlers for all resources
+- **routes/** - Express routers with authentication protection
+- **scripts/** - Database initialization and admin creation scripts
 
 ### Frontend Structure
-- **public/index.html** - Dashboard (main page)
-- **public/app.js** - Shared frontend logic across all pages
-- **public/style.css** - Global styles and theme
-- **public/pages/** - Additional pages (assignments, exams, study, grades, quests, shop)
+- **public/index.html** - Dashboard with leaderboard and events
+- **public/pages/auth.html** - Login and registration page
+- **public/pages/profile.html** - User profile with avatar, badges, inventory
+- **public/pages/events.html** - Events listing (admin can add/edit)
+- **public/pages/shop.html** - Shop with purchase confirmation
+- **public/pages/quests.html** - Quests with badge rewards (admin-editable)
+- **public/app.js** - Comprehensive frontend logic with auth handling
+- **public/style.css** - Dark theme with blue/purple gradients
+
+### Database Models
+- **User** - Email, password, name, role (user/admin), XP, level, coins, streak, badges[], inventory[], avatar
+- **Assignment** - Title, subject, description, dueDate, priority, status, XP/coin rewards
+- **Exam** - Title, subject, type, date, difficulty, studyHoursNeeded, status, XP reward
+- **Grade** - examTitle, subject, score, maxScore, gradePoints, date, semester
+- **StudySession** - subject, duration, xpEarned, coinsEarned, date
+- **Quest** - title, description, type (daily/weekly/special), target, badgeReward, expiresAt, isActive
+- **UserQuest** - questId, userId, progress, status, completedAt
+- **Activity** - userId, type, title, icon, xpEarned, coinsEarned, badgeEarned
+- **Event** - title, description, date, location, type, icon, createdBy
+- **ShopItem** - name, description, price, icon, type, effect, isAvailable
 
 ### API Endpoints
-- `/api/user` - User profile and data
-- `/api/stats` - User statistics (completed tasks, GPA, etc.)
-- `/api/activities` - Activity feed (latest 20 activities)
-- `/api/assignments` - Assignment CRUD operations
-- `/api/exams` - Exam CRUD operations
-- `/api/study-sessions` - Study session management
-- `/api/grades` - Grade tracking
-- `/api/quests` - Quest progress and completion
+
+#### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/me` - Get current user
+- `GET /api/auth/check` - Check auth status
+
+#### User & Profile
+- `GET /api/user` - Get user profile (auth)
+- `PUT /api/user` - Update user profile (auth)
+- `GET /api/stats` - Get user stats (auth)
+- `GET /api/activities` - Get activity feed (auth)
+- `GET /api/leaderboard` - Get top 10 users (public)
+- `GET /api/inventory` - Get user inventory (auth)
+- `POST /api/inventory/:itemId/use` - Use inventory item (auth)
+- `POST /api/avatar/upload` - Upload avatar image (auth)
+- `PUT /api/avatar` - Update avatar (emoji) (auth)
+
+#### Assignments (all auth required)
+- `GET /api/assignments` - List assignments
+- `POST /api/assignments` - Create assignment
+- `PUT /api/assignments/:id` - Update assignment
+- `DELETE /api/assignments/:id` - Delete assignment
+- `POST /api/assignments/:id/complete` - Complete assignment
+
+#### Exams (all auth required)
+- `GET /api/exams` - List exams
+- `POST /api/exams` - Create exam
+- `PUT /api/exams/:id` - Update exam
+- `DELETE /api/exams/:id` - Delete exam
+- `POST /api/exams/:id/complete` - Complete exam
+
+#### Grades (all auth required)
+- `GET /api/grades` - List grades
+- `POST /api/grades` - Add grade
+- `DELETE /api/grades/:id` - Delete grade
+
+#### Study Sessions (all auth required)
+- `GET /api/study-sessions` - List recent sessions
+- `POST /api/study-sessions` - Log study session
+
+#### Quests
+- `GET /api/quests` - List quests with user progress (auth)
+- `POST /api/quests` - Create quest (admin only)
+- `PUT /api/quests/:id` - Update quest (admin only)
+- `DELETE /api/quests/:id` - Delete quest (admin only)
+- `POST /api/quests/:id/progress` - Update quest progress (auth)
+
+#### Shop
+- `GET /api/shop` - List available items (public)
+- `POST /api/shop/:itemId/purchase` - Purchase item (auth)
+- `POST /api/shop` - Create shop item (admin only)
+- `PUT /api/shop/:id` - Update shop item (admin only)
+- `DELETE /api/shop/:id` - Delete shop item (admin only)
+
+#### Events
+- `GET /api/events` - List all events (public)
+- `POST /api/events` - Create event (admin only)
+- `PUT /api/events/:id` - Update event (admin only)
+- `DELETE /api/events/:id` - Delete event (admin only)
 
 ## Key Features
-- Dashboard with user stats, XP bar, and activity feed
-- Assignment management with due dates and priorities
-- Exam scheduling with difficulty levels
+
+### User Features
+- User registration and login with session management
+- Profile customization (name, title, avatar emoji/upload)
+- Dashboard with stats, XP bar, activity feed, leaderboard, upcoming events
+- Assignment management with priorities and rewards
+- Exam scheduling and tracking
 - Pomodoro study timer (25-minute sessions)
 - Grade tracking with automatic GPA calculation
-- Quest system with daily and weekly goals
-- Reward shop (demo UI)
-- Dark theme with animated gradients
+- Quest system with badge rewards
+- Shop system with coin-based purchases
+- Inventory management with item usage
+- Badge showcase on profile
+- Leaderboard ranking (GPA → study hours → badges)
+
+### Admin Features
+- Full quest management (create/edit/delete with badge configuration)
+- Event management (create/edit/delete upcoming events)
+- Shop item management
+- Access to all user data
 
 ## Development
+
+### Setup Database
+```bash
+# Make sure MONGODB_URI is configured in Secrets
+npm run init-db    # Initialize with admin user and sample data
+npm run create-admin  # Create admin user only
+```
 
 ### Running Locally
 ```bash
@@ -60,15 +157,16 @@ npm install
 npm start
 ```
 
-### Running with Auto-reload
-```bash
-npm run dev
-```
+### Default Credentials
+- **Admin:** admin@questcraft.com / admin123
+- **Users:** Register at /pages/auth.html
 
 ## User Preferences
-None specified yet.
+- Dark theme with blue/purple gradients (#0f1419 background)
+- UI must match existing design perfectly
+- Badge-based quest rewards (not XP/coins for quests)
+- Leaderboard priority: GPA > study hours > badges
 
-## Notes
-- Data is stored in memory and resets on server restart
-- Default user: Syed Ahmed, Software Engineer
-- Pre-populated with sample assignments, exams, grades, and quests
+## MongoDB Setup Notes
+⚠️ **Current Issue**: The MONGODB_URI secret appears to have an incomplete cluster URL. 
+Please update with a complete MongoDB Atlas connection string. See MONGODB_ISSUE.md for details.

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Quest - Profile</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-badge"><span>SQ</span></div>
+            <a href="/" class="nav-title" style="text-decoration: none;">Student Quest</a>
+        </div>
+        <button id="navToggle" class="nav-toggle">☰</button>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/pages/assignments.html" class="nav-link">Assignments</a>
+            <a href="/pages/exams.html" class="nav-link">Exams</a>
+            <a href="/pages/study.html" class="nav-link">Study</a>
+            <a href="/pages/grades.html" class="nav-link">Grades</a>
+            <a href="/pages/quests.html" class="nav-link">Quests</a>
+            <a href="/pages/shop.html" class="nav-link">Shop</a>
+            <a href="/pages/events.html" class="nav-link">Events</a>
+            <a href="/pages/profile.html" class="nav-link active">
+                <span id="navUserAvatar" class="nav-avatar">🎓</span>
+                Profile
+            </a>
+            <a href="#" class="nav-link" onclick="handleLogout()">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section active">
+            <div class="section-header">
+                <h2>👤 My Profile</h2>
+            </div>
+
+            <div class="profile-grid">
+                <div class="card">
+                    <h3>Personal Information</h3>
+                    <div class="profile-avatar-section">
+                        <div class="avatar-circle large">
+                            <span id="profileAvatar">🎓</span>
+                        </div>
+                        <button class="btn btn-secondary" onclick="showAvatarPicker()">Change Avatar</button>
+                    </div>
+                    <div class="profile-info">
+                        <label>Name</label>
+                        <input type="text" id="profileName" class="input" placeholder="Your name">
+                        <label>Title</label>
+                        <input type="text" id="profileTitle" class="input" placeholder="Your title">
+                        <label>Email</label>
+                        <input type="email" id="profileEmail" class="input" placeholder="Your email">
+                        <button class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Stats Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileLevel">1</div>
+                            <div class="stat-label">Level</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileXP">0</div>
+                            <div class="stat-label">Total XP</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileCoins">0</div>
+                            <div class="stat-label">Coins</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileGPA">0.0</div>
+                            <div class="stat-label">GPA</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileStudyHours">0</div>
+                            <div class="stat-label">Study Hours</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileStreak">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🏆 Badges & Achievements</h3>
+                <div id="badgesGrid" class="badges-grid">
+                    <p style="color: var(--text-muted);">No badges earned yet. Complete quests to earn badges!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎒 Inventory</h3>
+                <div id="inventoryGrid" class="inventory-grid">
+                    <p style="color: var(--text-muted);">Your inventory is empty. Visit the shop to purchase items!</p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn btn-danger" onclick="handleLogout()">🚪 Logout</button>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© <span id="year"></span> Student Quest. All rights reserved.</span>
+            <span>Made with ❤️ for learning.</span>
+        </div>
+    </footer>
+</body>
+</html>

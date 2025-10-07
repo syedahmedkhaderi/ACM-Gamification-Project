@@ -1,35 +1,54 @@
-const store = require('../data/store');
+const Grade = require('../models/Grade');
 
-exports.list = (req, res) => {
-  const sorted = [...store.grades].sort((a, b) => new Date(b.date) - new Date(a.date));
-  res.json(sorted);
-};
+function calculateGradePoints(score, maxScore) {
+  const percentage = (score / maxScore) * 100;
+  if (percentage >= 90) return 4.0;
+  if (percentage >= 80) return 3.0;
+  if (percentage >= 70) return 2.0;
+  if (percentage >= 60) return 1.0;
+  return 0.0;
+}
 
-exports.create = (req, res) => {
-  const gradePoints = store.calculateGradePoints(req.body.score, req.body.maxScore || 100);
-
-  const grade = {
-    _id: store.generateId(),
-    ...req.body,
-    gradePoints,
-    date: req.body.date || new Date(),
-    semester: req.body.semester || 'Current',
-    userId: store.user._id,
-    createdAt: new Date()
-  };
-
-  store.grades.push(grade);
-  res.json(grade);
-};
-
-exports.remove = (req, res) => {
-  const index = store.grades.findIndex(g => g._id === req.params.id);
-  if (index !== -1) {
-    store.grades.splice(index, 1);
-    res.json({ message: 'Grade deleted' });
-  } else {
-    res.status(404).json({ error: 'Grade not found' });
+exports.list = async (req, res) => {
+  try {
+    const grades = await Grade.find({ userId: req.session.userId })
+      .sort({ date: -1 });
+    res.json(grades);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
+exports.create = async (req, res) => {
+  try {
+    const gradePoints = calculateGradePoints(req.body.score, req.body.maxScore || 100);
 
+    const grade = new Grade({
+      ...req.body,
+      gradePoints,
+      date: req.body.date || new Date(),
+      semester: req.body.semester || 'Current',
+      userId: req.session.userId
+    });
+
+    await grade.save();
+    res.json(grade);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const grade = await Grade.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.session.userId
+    });
+    if (!grade) {
+      return res.status(404).json({ error: 'Grade not found' });
+    }
+    res.json({ message: 'Grade deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
