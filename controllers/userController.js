@@ -31,4 +31,11 @@ exports.getStats = (req, res) => {
   });
 };
 
+exports.getActivities = (req, res) => {
+  const latest20 = store.activities
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 20);
+  res.json(latest20);
+};
+
 
