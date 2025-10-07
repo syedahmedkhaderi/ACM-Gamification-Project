@@ -2,42 +2,21 @@
 
 A comprehensive web application that gamifies the academic experience for students, featuring assignment tracking, study sessions, quests, achievements, and a virtual shop system. Built for the Association for Computing Machinery (ACM) to enhance student engagement and academic performance.
 
-## 🌟 Features and Gamification Mechanics
+## 📱 Usage Guide
 
-### XP System
-- **Assignment Completion**: 50-200 XP based on priority
-- **Study Sessions**: 1 XP per minute of study time
-- **Exam Completion**: 50-300 XP based on difficulty
-- **Quest Completion**: Variable XP based on quest type
+### For Students
+1. **Registration**: Create an account with email and password
+2. **Dashboard**: View your progress, XP, coins, and upcoming deadlines
+3. **Assignments**: Create and track academic assignments
+4. **Study Sessions**: Use the Pomodoro timer to log study time
+5. **Quests**: Complete daily and weekly challenges for rewards
+6. **Shop**: Spend coins on boosts, themes, and cosmetics
+7. **Profile**: Customize your avatar, title, and view achievements
 
-### Leveling System
-- **Level Calculation**: `Math.floor(xp / 100) + 1`
-- **Progressive Rewards**: Higher levels unlock better rewards
-- **Visual Feedback**: XP bars and level indicators
-
-### Currency System
-- **Coin Earning**: 10-50 coins per completed task
-- **Shop Economy**: Balanced pricing for virtual items
-- **Reward Scaling**: Higher rewards for more difficult tasks
-
-### 📚 Academic Management
-- **Assignment Tracking**: Create, manage, and complete assignments with XP rewards
-- **Exam Scheduling**: Schedule and track upcoming exams with study hour requirements
-- **Grade Management**: Record and track academic performance with GPA calculation
-- **Study Sessions**: Pomodoro timer with session logging and XP rewards
-- **Event Management**: ACM events, seminars, and deadlines
-
-### 🛒 Virtual Shop
-- **Boost Items**: XP multipliers, study shields, and time boosts
-- **Themes**: Unlock different visual themes
-- **Cosmetics**: Avatars, titles, and profile customizations
-- **Admin Management**: Create and manage shop items
-
-### 👥 User Management
-- **Student Accounts**: Registration and profile management
-- **Admin Panel**: Administrative controls for content management
-- **Authentication**: Secure login/logout with session management
-- **Profile Customization**: Avatars, titles, and personal information
+### For Administrators
+1. **Content Management**: Create quests, shop items, and events
+2. **User Oversight**: Monitor student progress and engagement
+3. **System Configuration**: Manage rewards, XP values, and shop items
 
 ## 🏗️ Architecture
 
@@ -148,22 +127,6 @@ A comprehensive web application that gamifies the academic experience for studen
 6. **Access the application**
    - Open your browser to `http://localhost:5000` (or `http://127.0.0.1:5000`)
    - Default admin credentials: `admin@acmlearning.com` / `admin123`
-
-## 📱 Usage Guide
-
-### For Students
-1. **Registration**: Create an account with email and password
-2. **Dashboard**: View your progress, XP, coins, and upcoming deadlines
-3. **Assignments**: Create and track academic assignments
-4. **Study Sessions**: Use the Pomodoro timer to log study time
-5. **Quests**: Complete daily and weekly challenges for rewards
-6. **Shop**: Spend coins on boosts, themes, and cosmetics
-7. **Profile**: Customize your avatar, title, and view achievements
-
-### For Administrators
-1. **Content Management**: Create quests, shop items, and events
-2. **User Oversight**: Monitor student progress and engagement
-3. **System Configuration**: Manage rewards, XP values, and shop items
 
 ## 🔮 Future Enhancements
 
