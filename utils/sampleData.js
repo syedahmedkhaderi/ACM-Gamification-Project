@@ -1,6 +1,7 @@
 const Assignment = require('../models/Assignment');
 const Exam = require('../models/Exam');
 const Grade = require('../models/Grade');
+const User = require('../models/User');
 
 // Function to create sample data for a new user
 const createSampleDataForUser = async (userId, userName = 'User') => {
@@ -206,6 +207,77 @@ const createSampleDataForUser = async (userId, userName = 'User') => {
   }
 };
 
+// Function to copy admin's assignments and exams to a new user
+const copyAdminDataToUser = async (userId) => {
+  try {
+    // Find the admin user
+    const admin = await User.findOne({ role: 'admin' });
+    if (!admin) {
+      console.log('No admin user found, falling back to sample data');
+      return await createSampleDataForUser(userId, 'User');
+    }
+
+    // Get admin's assignments and exams
+    const adminAssignments = await Assignment.find({ userId: admin._id });
+    const adminExams = await Exam.find({ userId: admin._id });
+    const adminGrades = await Grade.find({ userId: admin._id });
+
+    // Create copies for the new user
+    const newAssignments = adminAssignments.map(assignment => ({
+      title: assignment.title,
+      subject: assignment.subject,
+      description: assignment.description,
+      dueDate: assignment.dueDate,
+      priority: assignment.priority,
+      status: 'pending', // Reset status for new user
+      xpReward: assignment.xpReward,
+      coinReward: assignment.coinReward,
+      userId: userId
+    }));
+
+    const newExams = adminExams.map(exam => ({
+      title: exam.title,
+      subject: exam.subject,
+      type: exam.type,
+      date: exam.date,
+      difficulty: exam.difficulty,
+      studyHoursNeeded: exam.studyHoursNeeded,
+      status: 'upcoming', // Reset status for new user
+      xpReward: exam.xpReward,
+      userId: userId
+    }));
+
+    const newGrades = adminGrades.map(grade => ({
+      examTitle: grade.examTitle,
+      subject: grade.subject,
+      score: grade.score,
+      maxScore: grade.maxScore,
+      gradePoints: grade.gradePoints,
+      date: grade.date,
+      semester: grade.semester,
+      userId: userId
+    }));
+
+    // Insert the copied data
+    await Assignment.insertMany(newAssignments);
+    await Exam.insertMany(newExams);
+    await Grade.insertMany(newGrades);
+
+    console.log(`✅ Admin data copied to new user: ${newAssignments.length} assignments, ${newExams.length} exams, ${newGrades.length} grades`);
+    
+    return {
+      assignments: newAssignments.length,
+      exams: newExams.length,
+      grades: newGrades.length
+    };
+  } catch (error) {
+    console.error('Error copying admin data to new user:', error);
+    // Fallback to sample data if copying fails
+    return await createSampleDataForUser(userId, 'User');
+  }
+};
+
 module.exports = {
-  createSampleDataForUser
+  createSampleDataForUser,
+  copyAdminDataToUser
 };

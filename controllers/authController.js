@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { createSampleDataForUser } = require('../utils/sampleData');
+const { createSampleDataForUser, copyAdminDataToUser } = require('../utils/sampleData');
 
 exports.register = async (req, res) => {
   try {
@@ -19,13 +19,13 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    // Create sample data for new user
+    // Copy admin data to new user
     try {
-      await createSampleDataForUser(user._id, user.name);
-      console.log(`✅ Sample data created for new user: ${user.name} (${user.email})`);
+      await copyAdminDataToUser(user._id);
+      console.log(`✅ Admin data copied to new user: ${user.name} (${user.email})`);
     } catch (error) {
-      console.error('Error creating sample data for new user:', error);
-      // Don't fail registration if sample data creation fails
+      console.error('Error copying admin data to new user:', error);
+      // Don't fail registration if data copying fails
     }
 
     req.session.userId = user._id;
