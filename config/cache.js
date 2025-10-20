@@ -16,7 +16,16 @@ const initializeCache = () => {
       return false;
     }
     
-    redisClient = new Redis(redisUri);
+    // Configure Redis client with retry strategy
+    redisClient = new Redis(redisUri, {
+      retryStrategy: (times) => {
+        const delay = Math.min(times * 50, 2000);
+        return delay;
+      },
+      maxRetriesPerRequest: 3,
+      enableReadyCheck: true,
+      connectTimeout: 10000
+    });
     
     redisClient.on('connect', () => {
       console.log('✅ Redis connected successfully - caching enabled');
@@ -24,7 +33,7 @@ const initializeCache = () => {
     
     redisClient.on('error', (err) => {
       console.error('❌ Redis connection error:', err.message);
-      console.log('⚠️ Caching disabled due to Redis connection error');
+      console.log('⚠️ Application will continue without caching');
     });
     
     // Promisify Redis methods
@@ -42,7 +51,7 @@ const initializeCache = () => {
 // Cache middleware
 const cacheMiddleware = (duration) => {
   return async (req, res, next) => {
-    if (!redisClient) {
+    if (!redisClient || !redisClient.status || redisClient.status !== 'ready') {
       return next();
     }
     
@@ -51,19 +60,26 @@ const cacheMiddleware = (duration) => {
     
     try {
       // Check if data exists in cache
-      const cachedData = await getAsync(key);
+      const cachedData = await getAsync(key).catch(() => null);
       
       if (cachedData) {
-        // Return cached data
-        const data = JSON.parse(cachedData);
-        return res.json(data);
+        try {
+          // Return cached data
+          const data = JSON.parse(cachedData);
+          return res.json(data);
+        } catch (parseError) {
+          console.error('Cache parse error:', parseError);
+          // Continue with request if parsing fails
+        }
       }
       
       // If not in cache, modify res.json to cache the response
       const originalJson = res.json;
       res.json = function(data) {
-        // Cache the data
-        setAsync(key, JSON.stringify(data), 'EX', duration);
+        // Cache the data, but don't wait for it
+        setAsync(key, JSON.stringify(data), 'EX', duration).catch(err => {
+          console.error('Cache set error:', err.message);
+        });
         // Call the original json method
         return originalJson.call(this, data);
       };
@@ -78,12 +94,14 @@ const cacheMiddleware = (duration) => {
 
 // Clear cache for specific routes
 const clearCache = async (pattern) => {
-  if (!redisClient) return false;
+  if (!redisClient || !redisClient.status || redisClient.status !== 'ready') return false;
   
   try {
-    const keys = await redisClient.keys(`cache:${pattern || '*'}`);
+    const keys = await redisClient.keys(`cache:${pattern || '*'}`).catch(() => []);
     if (keys.length > 0) {
-      await redisClient.del(keys);
+      await redisClient.del(keys).catch(err => {
+        console.error('Cache delete error:', err.message);
+      });
       console.log(`Cleared ${keys.length} cache entries`);
     }
     return true;

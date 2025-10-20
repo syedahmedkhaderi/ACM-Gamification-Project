@@ -257,3 +257,6 @@ docker-compose.override.yml
 # Application specific
 logs/
 sessions/
+
+# Zencoder
+.zencoder/rules/
