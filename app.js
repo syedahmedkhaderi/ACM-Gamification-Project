@@ -15,6 +15,7 @@ const studySessionsRoutes = require('./routes/studySessions');
 const gradesRoutes = require('./routes/grades');
 const shopRoutes = require('./routes/shop');
 const eventsRoutes = require('./routes/events');
+const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
 
@@ -76,6 +77,7 @@ app.use('/api/study-sessions', studySessionsRoutes);
 app.use('/api/grades', gradesRoutes);
 app.use('/api/shop', shopRoutes);
 app.use('/api/events', eventsRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 module.exports = app;
 
