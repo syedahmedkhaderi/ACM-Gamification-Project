@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const compression = require('compression');
 const connectDB = require('./config/database');
+const { initializeCache } = require('./config/cache');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -13,12 +15,20 @@ const studySessionsRoutes = require('./routes/studySessions');
 const gradesRoutes = require('./routes/grades');
 const shopRoutes = require('./routes/shop');
 const eventsRoutes = require('./routes/events');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
+// Enable compression for all responses
+app.use(compression());
+
+// Connect to MongoDB
 connectDB().then(connected => {
   if (connected) {
     console.log('🎉 App running with MongoDB database');
+    
+    // Initialize Redis cache if MongoDB is connected
+    initializeCache();
   } else {
     console.log('⚠️  App running without database - please configure MongoDB');
   }
@@ -67,6 +77,7 @@ app.use('/api/study-sessions', studySessionsRoutes);
 app.use('/api/grades', gradesRoutes);
 app.use('/api/shop', shopRoutes);
 app.use('/api/events', eventsRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 module.exports = app;
 

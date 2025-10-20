@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { createIndexes } = require('../utils/queryOptimizer');
 
 const connectDB = async () => {
   try {
@@ -19,8 +20,25 @@ const connectDB = async () => {
       return false;
     }
 
-    await mongoose.connect(mongoURI);
+    // Configure mongoose for better performance
+    mongoose.set('strictQuery', false);
+    
+    // Connect with optimized settings
+    await mongoose.connect(mongoURI, {
+      // These options improve performance
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 5,  // Maintain at least 5 socket connections
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+      serverSelectionTimeoutMS: 10000, // Keep trying to send operations for 10 seconds
+      heartbeatFrequencyMS: 10000, // Check server health every 10 seconds
+    });
+    
     console.log('✅ MongoDB connected successfully');
+    
+    // Create indexes for better query performance
+    await createIndexes(mongoose);
+    
     return true;
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);

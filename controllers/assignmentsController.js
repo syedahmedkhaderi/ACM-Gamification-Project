@@ -1,14 +1,39 @@
 const Assignment = require('../models/Assignment');
 const User = require('../models/User');
 const Activity = require('../models/Activity');
+const { paginateResults, optimizeProjection } = require('../utils/queryOptimizer');
 
 exports.list = async (req, res) => {
   try {
-    const assignments = await Assignment.find({ userId: req.session.userId })
-      .sort({ dueDate: 1 });
-    res.json(assignments);
+    // Get pagination parameters from query string
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const status = req.query.status || null;
+    
+    // Build query
+    const query = { userId: req.session.userId };
+    if (status) {
+      query.status = status;
+    }
+    
+    // Define projection (only return needed fields)
+    const projection = optimizeProjection([
+      'title', 'description', 'dueDate', 'status', 
+      'subject', 'priority', 'xpReward', 'coinReward'
+    ]);
+    
+    // Use optimized pagination
+    const result = await paginateResults(Assignment, query, {
+      page,
+      limit,
+      sort: { dueDate: 1 },
+      projection
+    });
+    
+    res.json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching assignments:', error);
+    res.status(500).json({ error: 'Failed to fetch assignments' });
   }
 };
 
@@ -61,26 +86,36 @@ exports.remove = async (req, res) => {
 
 exports.complete = async (req, res) => {
   try {
-    const assignment = await Assignment.findOne({
-      _id: req.params.id,
-      userId: req.session.userId
-    });
+    // Use findOneAndUpdate to update in a single operation
+    const assignment = await Assignment.findOneAndUpdate(
+      { _id: req.params.id, userId: req.session.userId },
+      { $set: { status: 'completed' } },
+      { new: true }
+    );
     
     if (!assignment) {
       return res.status(404).json({ error: 'Assignment not found' });
     }
 
-    assignment.status = 'completed';
-    await assignment.save();
-
-    const user = await User.findById(req.session.userId);
-    user.xp += assignment.xpReward;
-    user.coins += assignment.coinReward;
-    user.totalTasksCompleted += 1;
+    // Use findByIdAndUpdate to update user in a single operation
+    const user = await User.findByIdAndUpdate(
+      req.session.userId,
+      {
+        $inc: {
+          xp: assignment.xpReward,
+          coins: assignment.coinReward,
+          totalTasksCompleted: 1
+        }
+      },
+      { new: true }
+    );
+    
+    // Calculate level after update
     user.level = user.calculateLevel();
     await user.save();
 
-    await Activity.create({
+    // Create activity record
+    const activity = new Activity({
       type: 'assignment-complete',
       title: 'Assignment Completed!',
       description: `Completed "${assignment.title}"`,
@@ -89,9 +124,33 @@ exports.complete = async (req, res) => {
       coinsEarned: assignment.coinReward,
       userId: req.session.userId
     });
+    
+    // Use Promise.all to run operations in parallel
+    await Promise.all([
+      activity.save(),
+      // No need to save user again as we already did above
+    ]);
 
-    res.json({ assignment, user });
+    // Return only necessary user data
+    const userData = {
+      xp: user.xp,
+      level: user.level,
+      coins: user.coins,
+      totalTasksCompleted: user.totalTasksCompleted
+    };
+
+    res.json({ 
+      assignment: {
+        id: assignment._id,
+        title: assignment.title,
+        status: assignment.status,
+        xpReward: assignment.xpReward,
+        coinReward: assignment.coinReward
+      }, 
+      user: userData 
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error completing assignment:', error);
+    res.status(500).json({ error: 'Failed to complete assignment' });
   }
 };
