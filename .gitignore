@@ -260,3 +260,13 @@ sessions/
 
 # Zencoder
 .zencoder/rules/
+
+# Screenshots
+screenshots/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.webp
