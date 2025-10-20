@@ -9,12 +9,7 @@
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="css/optimized.css" as="style">
     <link rel="preload" href="js/utils.js" as="script">
-    <link rel="preload" href="js/dashboard-optimizer.js" as="script">
     <link rel="preload" href="app.js" as="script">
-    
-    <!-- Preconnect to API endpoints -->
-    <link rel="preconnect" href="/api">
-    <link rel="preconnect" href="/api/dashboard">
     
     <!-- Meta tags for better SEO and performance -->
     <meta name="description" content="ACM Learning - Gamified Student Management System">
@@ -157,344 +152,63 @@
 
     <!-- Load utility scripts first -->
     <script src="js/utils.js"></script>
-    <script src="js/dashboard-optimizer.js"></script>
     
     <!-- Main application script with defer to not block rendering -->
     <script src="app.js" defer></script>
     
-    <!-- Register service worker for offline support and faster loading -->
-    <script>
-      // Register service worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-              console.log('ServiceWorker registered with scope:', registration.scope);
-            })
-            .catch(error => {
-              console.error('ServiceWorker registration failed:', error);
-            });
-        });
-      }
-    </script>
-    
     <!-- Initialize performance optimizations -->
     <script>
-      // Set current year in footer immediately
-      document.getElementById('year').textContent = new Date().getFullYear();
-      
-      // Initialize dashboard with ultra-fast loading
-      // This will show content immediately from localStorage if available
+      // Initialize lazy loading of images when DOM is ready
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize lazy loading for images
+        // Initialize lazy loading
         window.appUtils.lazyLoadImages();
         
-        // Add content visibility optimization for offscreen elements
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.remove('offscreen');
-            } else {
-              entry.target.classList.add('offscreen');
-            }
-          });
-        }, { rootMargin: '200px' });
+        // Add current year to footer
+        document.getElementById('year').textContent = new Date().getFullYear();
         
-        // Observe all cards for content visibility optimization
-        document.querySelectorAll('.card').forEach(card => {
-          observer.observe(card);
-        });
-      });
-      
-      // Fetch all dashboard data in a single request
-      async function fetchDashboardData() {
-        try {
-          const response = await fetch('/api/dashboard');
-          if (!response.ok) throw new Error('Failed to fetch dashboard data');
-          
-          const data = await response.json();
-          
-          // Update all dashboard sections at once
-          if (data.user) updateUserProfile(data.user);
-          if (data.stats) updateStats(data.stats);
-          if (data.activeQuests) updateQuestsList(data.activeQuests);
-          if (data.upcomingDeadlines) updateDeadlinesList(data.upcomingDeadlines);
-          if (data.upcomingEvents) updateEventsList(data.upcomingEvents);
-          if (data.leaderboard) updateLeaderboard(data.leaderboard);
-          if (data.recentActivity) updateActivityFeed(data.recentActivity);
-          
-          // Save to localStorage for next time
-          localStorage.setItem('dashboardData', JSON.stringify(data));
-          localStorage.setItem('dashboardDataTimestamp', Date.now());
-        } catch (error) {
-          console.error('Error fetching dashboard data:', error);
-        }
-      }
-      
-      // Try to load dashboard data from localStorage first
-      function loadDashboardFromLocalStorage() {
-        const timestamp = localStorage.getItem('dashboardDataTimestamp');
-        const data = localStorage.getItem('dashboardData');
-        
-        if (timestamp && data) {
-          // Check if data is less than 5 minutes old
-          const now = Date.now();
-          const fiveMinutesInMs = 5 * 60 * 1000;
-          
-          if ((now - parseInt(timestamp)) < fiveMinutesInMs) {
-            try {
-              const parsedData = JSON.parse(data);
-              
-              // Update all dashboard sections at once
-              if (parsedData.user) updateUserProfile(parsedData.user);
-              if (parsedData.stats) updateStats(parsedData.stats);
-              if (parsedData.activeQuests) updateQuestsList(parsedData.activeQuests);
-              if (parsedData.upcomingDeadlines) updateDeadlinesList(parsedData.upcomingDeadlines);
-              if (parsedData.upcomingEvents) updateEventsList(parsedData.upcomingEvents);
-              if (parsedData.leaderboard) updateLeaderboard(parsedData.leaderboard);
-              if (parsedData.recentActivity) updateActivityFeed(parsedData.recentActivity);
-              
-              return true;
-            } catch (error) {
-              console.error('Error parsing localStorage data:', error);
-            }
-          }
-        }
-        
-        return false;
-      }
-      
-      // Initialize dashboard immediately
-      (function() {
-        // Try to load from localStorage first
-        const loadedFromLocalStorage = loadDashboardFromLocalStorage();
-        
-        // If not loaded from localStorage, fetch fresh data
-        if (!loadedFromLocalStorage) {
-          // Show skeleton loaders immediately
-          addSkeletonLoaders();
-          
-          // Fetch fresh data
-          fetchDashboardData();
-        }
-      })();
-      
-      // Helper functions
-      function updateUserProfile(userData) {
-        document.getElementById('userName').textContent = userData.name;
-        document.getElementById('navUserAvatar').textContent = userData.avatar;
-        document.getElementById('userAvatar').textContent = userData.avatar;
-        document.getElementById('userTitle').textContent = userData.title;
-        document.getElementById('userLevel').textContent = userData.level;
-        document.getElementById('userCoins').textContent = userData.coins;
-        document.getElementById('userStreak').textContent = userData.streak;
-        
-        // Calculate XP percentage for progress bar
-        const currentXP = userData.xp % 100;
-        const nextLevelXP = 100;
-        document.getElementById('currentXP').textContent = currentXP;
-        document.getElementById('nextLevelXP').textContent = nextLevelXP;
-        
-        const xpPercentage = Math.min(100, (currentXP / nextLevelXP) * 100);
-        document.getElementById('xpBar').style.width = `${xpPercentage}%`;
-      }
-      
-      function updateStats(statsData) {
-        document.getElementById('statCompleted').textContent = statsData.completedTasks;
-        document.getElementById('statPending').textContent = statsData.pendingTasks;
-        document.getElementById('statGPA').textContent = statsData.gpa.toFixed(1);
-        document.getElementById('statStudyHours').textContent = Math.floor(statsData.studyMinutes / 60);
-      }
-      
-      function updateQuestsList(quests) {
-        const questsList = document.getElementById('activeQuestsList');
-        
-        if (!quests || quests.length === 0) {
-          questsList.innerHTML = '<p>No active quests. Check back later!</p>';
-          return;
-        }
-        
-        let html = '';
-        quests.forEach(quest => {
-          html += `
-            <div class="quest-item">
-              <div class="quest-header">
-                <span class="quest-icon">${quest.icon || '🎯'}</span>
-                <span class="quest-title">${quest.title}</span>
-              </div>
-              <div class="quest-description">${quest.description}</div>
-              <div class="quest-rewards">
-                <span class="xp-reward">+${quest.xpReward} XP</span>
-                <span class="coin-reward">+${quest.coinReward} Coins</span>
-              </div>
-            </div>
-          `;
-        });
-        
-        questsList.innerHTML = html;
-      }
-      
-      function updateDeadlinesList(deadlines) {
-        const deadlinesList = document.getElementById('upcomingDeadlines');
-        
-        if (!deadlines || deadlines.length === 0) {
-          deadlinesList.innerHTML = '<p>No upcoming deadlines. You\'re all caught up!</p>';
-          return;
-        }
-        
-        let html = '';
-        deadlines.forEach(deadline => {
-          const dueDate = new Date(deadline.dueDate);
-          const formattedDate = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          
-          html += `
-            <div class="deadline-item">
-              <div class="deadline-date">${formattedDate}</div>
-              <div class="deadline-content">
-                <div class="deadline-title">${deadline.title}</div>
-                <div class="deadline-subject">${deadline.subject || 'General'}</div>
-              </div>
-              <div class="deadline-priority ${deadline.priority || 'medium'}">${deadline.priority || 'Medium'}</div>
-            </div>
-          `;
-        });
-        
-        deadlinesList.innerHTML = html;
-      }
-      
-      function updateLeaderboard(leaderboard) {
-        const leaderboardList = document.getElementById('leaderboardList');
-        
-        if (!leaderboard || leaderboard.length === 0) {
-          leaderboardList.innerHTML = '<p>No leaderboard data available.</p>';
-          return;
-        }
-        
-        let html = '';
-        leaderboard.forEach((user, index) => {
-          const isCurrentUser = user.isCurrentUser ? 'current-user' : '';
-          
-          html += `
-            <div class="leaderboard-item ${isCurrentUser}">
-              <div class="leaderboard-rank">${index + 1}</div>
-              <div class="leaderboard-avatar">${user.avatar || '🎓'}</div>
-              <div class="leaderboard-name">${user.name}</div>
-              <div class="leaderboard-level">Level ${user.level}</div>
-            </div>
-          `;
-        });
-        
-        leaderboardList.innerHTML = html;
-      }
-      
-      function updateEventsList(events) {
-        const eventsList = document.getElementById('upcomingEvents');
-        
-        if (!events || events.length === 0) {
-          eventsList.innerHTML = '<p>No upcoming events. Check back later!</p>';
-          return;
-        }
-        
-        let html = '';
-        events.forEach(event => {
-          const eventDate = new Date(event.date);
-          const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          
-          html += `
-            <div class="event-item">
-              <div class="event-date">${formattedDate}</div>
-              <div class="event-content">
-                <div class="event-title">${event.title}</div>
-                <div class="event-location">${event.location || 'TBD'}</div>
-              </div>
-            </div>
-          `;
-        });
-        
-        eventsList.innerHTML = html;
-      }
-      
-      function updateActivityFeed(activities) {
-        const activityFeed = document.getElementById('activityFeed');
-        
-        if (!activities || activities.length === 0) {
-          activityFeed.innerHTML = '<p>No recent activity.</p>';
-          return;
-        }
-        
-        let html = '';
-        activities.forEach(activity => {
-          const activityDate = new Date(activity.createdAt);
-          const formattedDate = activityDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          
-          html += `
-            <div class="activity-item">
-              <div class="activity-icon">${activity.icon || '📝'}</div>
-              <div class="activity-content">
-                <div class="activity-title">${activity.title}</div>
-                <div class="activity-description">${activity.description}</div>
-                <div class="activity-date">${formattedDate}</div>
-              </div>
-            </div>
-          `;
-        });
-        
-        activityFeed.innerHTML = html;
-      }
-      
-      function addSkeletonLoaders() {
-        const contentAreas = [
-          { id: 'activeQuestsList', count: 3 },
-          { id: 'upcomingDeadlines', count: 3 },
-          { id: 'leaderboardList', count: 5 },
-          { id: 'upcomingEvents', count: 3 },
-          { id: 'activityFeed', count: 5 }
+        // Add skeleton loading for content that's loading
+        const skeletonElements = [
+          'activeQuestsList',
+          'upcomingDeadlines',
+          'leaderboardList',
+          'upcomingEvents',
+          'activityFeed'
         ];
         
-        contentAreas.forEach(area => {
-          const element = document.getElementById(area.id);
+        skeletonElements.forEach(id => {
+          const element = document.getElementById(id);
           if (element) {
+            // Add skeleton placeholders
             let skeletonHTML = '';
-            
-            for (let i = 0; i < area.count; i++) {
-              if (area.id === 'leaderboardList') {
-                // Special skeleton for leaderboard
-                skeletonHTML += `
-                  <div class="leaderboard-item skeleton-item">
-                    <div class="leaderboard-rank">${i+1}</div>
-                    <div class="skeleton circle" style="width: 30px; height: 30px; border-radius: 50%;"></div>
-                    <div class="skeleton" style="width: 120px; height: 16px;"></div>
-                    <div class="skeleton" style="width: 50px; height: 16px;"></div>
-                  </div>
-                `;
-              } else if (area.id === 'activityFeed') {
-                // Special skeleton for activity feed
-                skeletonHTML += `
-                  <div class="activity-item skeleton-item">
-                    <div class="activity-icon skeleton circle" style="width: 30px; height: 30px; border-radius: 50%;"></div>
-                    <div class="activity-content">
-                      <div class="skeleton" style="width: 70%; height: 16px; margin-bottom: 8px;"></div>
-                      <div class="skeleton" style="width: 90%; height: 12px;"></div>
-                      <div class="skeleton" style="width: 40%; height: 12px;"></div>
-                    </div>
-                  </div>
-                `;
-              } else {
-                // Default skeleton
-                skeletonHTML += `
-                  <div class="skeleton-item">
-                    <div class="skeleton" style="width: 70%; height: 16px; margin-bottom: 8px;"></div>
-                    <div class="skeleton" style="width: 90%; height: 12px;"></div>
-                    <div class="skeleton" style="width: 40%; height: 12px;"></div>
-                  </div>
-                `;
-              }
+            for (let i = 0; i < 3; i++) {
+              skeletonHTML += `
+                <div class="skeleton-item">
+                  <div class="skeleton title"></div>
+                  <div class="skeleton text"></div>
+                  <div class="skeleton text" style="width: 70%"></div>
+                </div>
+              `;
             }
-            
             element.innerHTML = skeletonHTML;
           }
         });
-      }
+      });
+      
+      // Add content visibility optimization for offscreen elements
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('offscreen');
+          } else {
+            entry.target.classList.add('offscreen');
+          }
+        });
+      }, { rootMargin: '200px' });
+      
+      // Observe all cards for content visibility optimization
+      document.querySelectorAll('.card').forEach(card => {
+        observer.observe(card);
+      });
     </script>
     
     <footer class="site-footer">
